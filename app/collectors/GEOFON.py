@@ -14,30 +14,21 @@ soup = BeautifulSoup(site,"html.parser")
 
 list_of_cards = soup.find('div',class_="container-fluid eqlist")
 
+for index,a in enumerate(list_of_cards.find_all('a'),start=1):
 
+    try: 
+        magnitude = a.find('span',class_="magbox").text
+    except AttributeError:
+        continue
 
-for index,card in enumerate(list_of_cards.find_all('div',class_="flex-row row eqinfo-all evnrow"),start=1):
-    magnitude = card.find('span',class_="magbox").text
+    try: 
+        a.find('span',class_="pull-right").find('span')["title"]
+        depth = a.find('span',class_="pull-right").find('span').text.replace("*", "")
+    except KeyError:
+        depth = a.find('span',class_="pull-right").contents[0]
 
-    if card.find('span',class_="pull-right").find('span'):
-        depth = card.find('span',class_="pull-right").find('span')
-    else:
-        depth = card.find('span',class_="pull-right").contents[0]
-
-    time = card.find_all('div',class_="col-xs-12")[1].contents[0]
-    place = card.strong.text
-    Epicenter = card.find('div',class_="col-xs-12")["title"]
+    time = a.find_all('div',class_="col-xs-12")[1].contents[0]
+    place = a.strong.text
+    Epicenter = a.find('div',class_="col-xs-12")["title"]
     latitude = Epicenter.split(",")[0]
     longitude = Epicenter.split(",")[1]
-
-    print("--------------------")
-    print(index)
-
-    print("magnitude",magnitude.strip())
-    print("depth",depth.strip())
-    print(time.strip())
-    print(place.strip())
-    print(Epicenter.strip())
-    print(latitude.strip())
-    print(longitude.strip())
-    print("--------------------")
