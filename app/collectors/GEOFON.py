@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime , timedelta
+import csv
 
 end_date = datetime.today().date()
 start_date = end_date - timedelta(days=30)
@@ -12,9 +13,13 @@ site = requests.get(url).text
 
 soup = BeautifulSoup(site,"html.parser")
 
+csv_file = open("JAPAN_GEOFON.csv",'w')
+csv_witer = csv.writer(csv_file)
+csv_witer.writerow(["id","magnitude","depth","time","place","latitude","longitude"])
+
 list_of_cards = soup.find('div',class_="container-fluid eqlist")
 
-for index,a in enumerate(list_of_cards.find_all('a'),start=1):
+for id,a in enumerate(list_of_cards.find_all('a')):
 
     try: 
         magnitude = a.find('span',class_="magbox").text
@@ -32,3 +37,7 @@ for index,a in enumerate(list_of_cards.find_all('a'),start=1):
     Epicenter = a.find('div',class_="col-xs-12")["title"]
     latitude = Epicenter.split(",")[0]
     longitude = Epicenter.split(",")[1]
+
+    csv_witer.writerow([id,magnitude,depth,time,place,latitude,longitude])
+
+csv_file.close()
