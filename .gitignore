@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 *.csv
+!data/raw/japan_messy_earthquakes.csv
 build/
 develop-eggs/
 dist/
