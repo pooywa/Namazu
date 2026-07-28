@@ -1,7 +1,7 @@
 import csv
 import time
 from datetime import datetime, timedelta
-from app.utils.save_file_to_csv import save_csv
+from app.utils.save_to_file_csv import save_csv
 from pathlib import Path
 
 from selenium import webdriver
@@ -180,7 +180,10 @@ def read_all_earthquake_pages(driver, wait):
             earthquake["DateTime"] for earthquake in page_earthquakes
         )
 
-        if not page_signature or page_signature in seen_pages:
+        if not page_signature:
+            raise ValueError("EMSC returned an empty results page")
+
+        if page_signature in seen_pages:
             break
 
         seen_pages.add(page_signature)
@@ -206,9 +209,10 @@ def read_all_earthquake_pages(driver, wait):
 
         try:
             wait.until(lambda _driver: get_visible_dates() != previous_dates)
-        except (TimeoutException, StaleElementReferenceException):
-            print("next page did not load; pagination stopped")
-            break
+        except (TimeoutException, StaleElementReferenceException) as error:
+            raise TimeoutException(
+                "Failed to load the next EMSC results page"
+            ) from error
 
         page_number += 1
 
@@ -232,6 +236,11 @@ def main():
         time.sleep(5)
         
         earthquakes = read_all_earthquake_pages(driver, wait)
+
+        if not earthquakes:
+            print("EMSC returned no earthquakes; CSV was not overwritten")
+            return
+
         save_csv(OUTPUT_FILE,earthquakes)
         
         print(f"saved {len(earthquakes)} earthquakes to:")
