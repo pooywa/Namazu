@@ -73,4 +73,4 @@ def main():
     data = pars_data(page)
     save_csv("JAPAN_GEOFON.csv",data)
 
-main()
+main() 
