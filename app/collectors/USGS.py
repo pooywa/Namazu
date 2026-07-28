@@ -1,57 +1,98 @@
-import requests
+import csv
+import io
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# Store the downloaded CSV next to this script.
-CSV_FILE_PATH = Path(__file__).with_name("japan_earthquakes.csv")
+import requests
 
-# Fetch earthquake data from the last 30 days.
-end_date = datetime.today().date()
-start_date = end_date - timedelta(days=30)
+URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
+OUTPUT_FILE = (
+    Path(__file__).resolve().parents[2]
+    / "data"
+    / "raw"
+    / "usgs-earthquakes.csv"
+)
 
-url = "https://earthquake.usgs.gov/fdsnws/event/1/query"
-
-params = {
-    "format": "csv",
-    "starttime": start_date.isoformat(),
-    "endtime": end_date.isoformat(),
-    "minlatitude": 24,
-    "maxlatitude": 46,
-    "minlongitude": 123,
-    "maxlongitude": 146,
-    "minmagnitude": 1,
-} 
+CSV_COLUMNS = [
+    "DateTime",
+    "Latitude",
+    "Longitude",
+    "Depth(km)",
+    "Magnitude",
+    "Region",
+]
 
 
-try:
-    # Request earthquake data from the USGS API.
-    response = requests.get(url, params=params, timeout=30)
+def get_last_30_days():
+    end_date = datetime.today().date()
+    start_date = end_date - timedelta(days=30)
+    return start_date.isoformat(), end_date.isoformat()
+
+
+def fetch_earthquakes():
+    start_date, end_date = get_last_30_days()
+    params = {
+        "format": "csv",
+        "starttime": start_date,
+        "endtime": end_date,
+        "minlatitude": 24,
+        "maxlatitude": 46,
+        "minlongitude": 123,
+        "maxlongitude": 146,
+        "minmagnitude": 1,
+    }
+
+    response = requests.get(URL, params=params, timeout=30)
     response.raise_for_status()
+    return response.text
 
-    # Save the API response as a CSV file.
-    CSV_FILE_PATH.write_text(response.text, encoding="utf-8")
-    print("Earthquake data saved successfully.")
 
-except requests.exceptions.RequestException as e:
-    print(f"USGS request failed: {e}")
+def parse_earthquakes(csv_text):
+    earthquakes = []
 
-# Verify that the file was created successfully before reading it.
-# Make sure the CSV file exists before attempting to read it.
-if CSV_FILE_PATH.exists():
+    for row in csv.DictReader(io.StringIO(csv_text)):
+        earthquake = {
+            "DateTime": row.get("time", "").strip(),
+            "Latitude": row.get("latitude", "").strip(),
+            "Longitude": row.get("longitude", "").strip(),
+            "Depth(km)": row.get("depth", "").strip(),
+            "Magnitude": row.get("mag", "").strip(),
+            "Region": row.get("place", "").strip(),
+        }
+
+        if all(earthquake.values()):
+            earthquakes.append(earthquake)
+
+    return earthquakes
+
+
+def save_to_csv(earthquakes):
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+    with OUTPUT_FILE.open("w", newline="", encoding="utf-8-sig") as file:
+        writer = csv.DictWriter(file, fieldnames=CSV_COLUMNS)
+        writer.writeheader()
+        writer.writerows(earthquakes)
+
+
+def main():
     try:
-        # Read the entire contents of the CSV file.
-        content = CSV_FILE_PATH.read_text(encoding="utf-8")
+        csv_text = fetch_earthquakes()
+        earthquakes = parse_earthquakes(csv_text)
 
-        # Print the number of characters read as a simple verification.
-        print("File read successfully. Length:", len(content))
+        if not earthquakes:
+            print("USGS returned no earthquakes; CSV was not overwritten")
+            return
 
-    except Exception as e:
-        # Handle any unexpected errors while reading the file.
-        print(f"Error reading file: {e}")
+        save_to_csv(earthquakes)
+        print(f"Saved {len(earthquakes)} earthquakes to:")
+        print(OUTPUT_FILE)
 
-else:
-    # Notify the user if the CSV file was not created.
-    print(
-        f"Warning: CSV file does not exist at {CSV_FILE_PATH}. "
-        "Please check your network connection and try again."
-    )
+    except requests.RequestException as error:
+        print(f"USGS request failed: {error}")
+    except OSError as error:
+        print(f"Failed to save USGS data: {error}")
+
+
+if __name__ == "__main__":
+    main()
