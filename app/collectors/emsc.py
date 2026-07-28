@@ -1,6 +1,7 @@
 import csv
 import time
 from datetime import datetime, timedelta
+from app.utils.save_file_to_csv import save_csv
 from pathlib import Path
 
 from selenium import webdriver
@@ -12,7 +13,7 @@ from selenium.common.exceptions import TimeoutException, StaleElementReferenceEx
 #Config
 #
 URL = "https://www.emsc.eu/Earthquake_information/"
-OUTPUT_FILE = Path(__file__).resolve().parent / "emsc-earthquakes.csv"
+OUTPUT_FILE = Path(__file__).resolve().parents[2] /"data"/ "emsc-earthquakes.csv"
 WAIT_SECOND = 20
 
 LAT_MIN = 24
@@ -213,14 +214,6 @@ def read_all_earthquake_pages(driver, wait):
 
     return all_earthquakes
 
-
-def save_to_csv(earthquakes):
-    with OUTPUT_FILE.open("w", newline="", encoding="utf-8-sig") as file:
-        writer = csv.DictWriter(file, fieldnames=CSV_COLUMNS)
-        writer.writeheader()
-        writer.writerows(earthquakes)
-
-
 def main():
     driver = create_driver()
     wait = WebDriverWait(driver, WAIT_SECOND)
@@ -239,7 +232,7 @@ def main():
         time.sleep(5)
         
         earthquakes = read_all_earthquake_pages(driver, wait)
-        save_to_csv(earthquakes)
+        save_csv(OUTPUT_FILE,earthquakes)
         
         print(f"saved {len(earthquakes)} earthquakes to:")
         print(OUTPUT_FILE)
