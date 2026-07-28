@@ -20,7 +20,8 @@ params = {
     "minlongitude": 123,
     "maxlongitude": 146,
     "minmagnitude": 1,
-}
+} 
+
 
 try:
     # Request earthquake data from the USGS API.
@@ -35,14 +36,21 @@ except requests.exceptions.RequestException as e:
     print(f"USGS request failed: {e}")
 
 # Verify that the file was created successfully before reading it.
+# Make sure the CSV file exists before attempting to read it.
 if CSV_FILE_PATH.exists():
     try:
+        # Read the entire contents of the CSV file.
         content = CSV_FILE_PATH.read_text(encoding="utf-8")
+
+        # Print the number of characters read as a simple verification.
         print("File read successfully. Length:", len(content))
 
     except Exception as e:
+        # Handle any unexpected errors while reading the file.
         print(f"Error reading file: {e}")
+
 else:
+    # Notify the user if the CSV file was not created.
     print(
         f"Warning: CSV file does not exist at {CSV_FILE_PATH}. "
         "Please check your network connection and try again."
