@@ -25,7 +25,7 @@ def record_count():
         stmt = Select(Earthquake).where(Earthquake.source == source)
         r_c =  managedb.read(stmt,"all")
         total_record += len(r_c)
-        print(f"| {source}   | {total_record} |")
+        print(f"| {source}   | {len(r_c)} |")
 
     print("")
     print("Total records: ",total_record)
