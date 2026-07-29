@@ -1,8 +1,8 @@
 from sqlalchemy import Select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from configuration import session,engine
-from models import Earthquake
+from app.database.configuration import session,engine
+from app.database.models import Earthquake
 
 #create table in database
 Earthquake.metadata.create_all(engine)
