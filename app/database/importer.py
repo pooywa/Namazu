@@ -3,7 +3,7 @@ import pandas as pd
 from app.database.configuration import engine
 from app.database.mapping import COLLECTOR_MAPPING, MAPPINGS, detect_source
 
-TABLE_NAME = "raw_earthquakes"
+TABLE_NAME = "earthquakes"
 CHUNK_SIZE = 100
 
 
