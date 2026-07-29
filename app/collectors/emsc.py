@@ -13,7 +13,7 @@ from selenium.common.exceptions import TimeoutException, StaleElementReferenceEx
 #Config
 #
 URL = "https://www.emsc.eu/Earthquake_information/"
-OUTPUT_FILE = Path(__file__).resolve().parents[2] /"data"/ "emsc-earthquakes.csv"
+OUTPUT_FILE = Path(__file__).resolve().parents[2] /"data"/ "raw" / "emsc-earthquakes.csv"
 WAIT_SECOND = 20
 
 LAT_MIN = 24
