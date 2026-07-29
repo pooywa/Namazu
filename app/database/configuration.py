@@ -9,7 +9,7 @@ db_password = os.getenv("DB_PASSWORD")
 db_user = os.getenv("DB_USER")
 #crate engine
 engine = create_engine(
-    f"postgresql+psycopg://{db_user}:{db_password}@localhost:5432/earthquakes"
+    f"postgresql+psycopg://{db_user}:{db_password}@localhost:5432/earthquakes_db"
 )
 
 #create sessoin 
