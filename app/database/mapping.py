@@ -1,51 +1,52 @@
 from pathlib import Path
 
-STANDARD_MAPPING = {
-    "DateTime":  "time",
-    "Latitude":  "latitude",
+COLLECTOR_MAPPING = {
+    "DateTime": "time",
+    "Latitude": "latitude",
     "Longitude": "longitude",
     "Depth(km)": "depth",
     "Magnitude": "magnitude",
-    "Region":    "place",
+    "Region": "place",
 }
 
 MESSY_MAPPING = {
-    "time":      "time",
-    "latitude":  "latitude",
+    "time": "time",
+    "latitude": "latitude",
     "longitude": "longitude",
-    "depth":     "depth",
-    "mag":       "magnitude",
-    "place":     "place",
+    "depth": "depth",
+    "mag": "magnitude",
+    "place": "place",
 }
 
-TARGET_COLUMNS = ["time", "latitude", "longitude", "depth", "magnitude", "place", "source"]
+MAPPINGS = {
+    "MESSY": MESSY_MAPPING,
+}
 
 
 def detect_source(filename: str) -> str:
-    name = Path(filename).stem.upper()
-    if "USGS" in name:
+    name_upper = Path(filename).name.upper()
+    if "USGS" in name_upper:
         return "USGS"
-    if "EMSC" in name:
+    if "EMSC" in name_upper:
         return "EMSC"
-    if "GEOFON" in name:
+    if "GEOFON" in name_upper:
         return "GEOFON"
-    if "DATASET" in name or "MESSY" in name:
+    if "DATASET" in name_upper or "MESSY" in name_upper:
         return "MESSY"
     raise ValueError(f"Cannot determine source from filename: {filename}")
 
 
-def get_mapping(filename: str) -> dict:
-    source = detect_source(filename)
-    if source == "MESSY":
-        return MESSY_MAPPING
-    return STANDARD_MAPPING
+def map_row(row: dict, source: str, filename: str = "unknown_file.csv") -> dict:
+    mapping = MAPPINGS.get(source, COLLECTOR_MAPPING)
 
-# Map raw CSV rows to the unified database schema and preserve original values.
-def map_row(row: dict, filename: str) -> dict:
-    source = detect_source(filename)
-    mapping = get_mapping(filename)
-    record = {col: None for col in TARGET_COLUMNS}
-    record["source"] = source
-    for csv_col, db_col in mapping.items():
-        record[db_col] = row.get(csv_col)
-    return record
+    try:
+        mapped = {db_col: row[csv_col] for csv_col, db_col in mapping.items()}
+    except KeyError as e:
+        missing_col = e.args[0]
+        raise ValueError(
+            f"Validation Error in {filename}: missing required column "
+            f"'{missing_col}' for source {source}"
+        ) from e
+
+    mapped["source"] = source
+    return mapped
