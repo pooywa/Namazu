@@ -38,8 +38,8 @@ def main() -> None:
     if not csv_files:
         raise FileNotFoundError("No CSV files found in data directory.")
 
-    if len(csv_files) != 4:
-        raise ValueError(f"Expected 4 CSV files, found {len(csv_files)}.")
+    # if len(csv_files) != 4:
+    #     raise ValueError(f"Expected 4 CSV files, found {len(csv_files)}.")
 
     print("Starting import...")
     print("Warning: append mode is used. Start with an empty table to avoid duplicates.\n")
