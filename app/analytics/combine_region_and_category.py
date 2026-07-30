@@ -1,12 +1,10 @@
 from sqlalchemy import func , select
 from app.database.models import Earthquake
-from app.database.configuration import session
+from app.database.db_manager import managedb
 from tabulate import tabulate
 
-def grouping(session):
+def grouping():
 
-    with session:
-        try:
             stmt = select(Earthquake.month,
                           Earthquake.category,
                           Earthquake.region,
@@ -20,16 +18,13 @@ def grouping(session):
                               Earthquake.region,
                               Earthquake.category)
 
-            result = session.execute(stmt).all()
-            return result
-        except Exception as e:
-            print(e)
-            return []
+            result =  managedb.read(stmt,'all')
+
 
 def main():
 
     # with tabulate we print our results in a pretty way
-    result = grouping(session)
+    result = grouping()
     print(tabulate(result,
                    headers=['month',
                             'category',
