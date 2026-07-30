@@ -37,16 +37,98 @@ def not_be_nigative():
                 managedb.delete(object=earthquake)
                 print(f"remove earthquake with negative depth id:{earthquake.id}")
 
+def remove_dublications_and_invalid_data():
+
+    nots_to_remove = ["DUPLICATE","Possible Duplicate","Very deep"]
+
+    for text in nots_to_remove:
+        stmt = Select(Earthquake).where(Earthquake.notes == text)
+        earthquakes = managedb.read(stmt,"all")
+        if earthquakes:
+            for earthquake in earthquakes:
+                managedb.delete(object=earthquake)
 
 
+def mile_to_km(mile:int):
+    km = 1.609344
+    return round(mile * km,2)
 
-    
+def mtr_to_km(mtr:int):
+    return round(mtr/1000,2)
 
 
+def replace_curent_data():
+    char_num = {"one":"1","two":"2","three":"3","four":"4","five":"5","six":"6","seven":"7","eight":"8","nine":"9"}
+    columns = inspect(Earthquake).columns
+
+    for column in columns:
+            
+        match str(column.name):
+            case "magnitude":
+                stmt = Select(Earthquake).where(Earthquake.magnitude.op("~")(r"[A-Za-z]"))
+                earthquakes = managedb.read(stmt,"all")
+                if earthquakes:
+                    for earthquake in earthquakes:
+                        text = earthquake.magnitude.strip().lower()
+                        new_val = None
+
+                        if "." in text:
+                            left, right = text.split(".")
+                            if left in char_num and right in char_num:
+                                new_val = f"{char_num[left]}.{char_num[right]}"
+
+                        elif " " in text:
+                            parts = text.split()
+                            if (
+                                len(parts) == 3
+                                and parts[0] in char_num
+                                and parts[1] == "point"
+                                and parts[2] in char_num
+                            ):
+                                new_val = f"{char_num[parts[0]]}.{char_num[parts[2]]}"
+
+                        elif text in char_num:
+                            new_val = char_num[text]
+
+                        if new_val == None:
+                            managedb.delete(object=earthquake)
+                            print(f"remove record with id {earthquake.id}")
+                        else:
+                            managedb.update(object=earthquake,attr="magnitude",new_value=new_val)
+                            print(f"update record with id {earthquake.id} new value is {new_val}")
+
+            case "depth":
+                stmt = Select(Earthquake).where(Earthquake.depth.op("~")(r"[A-Za-z]"))
+                earthquakes = managedb.read(stmt,"all")
+                if earthquakes:
+                    for earthquake in earthquakes:
+                        text:str = earthquake.depth.strip()
+                        new_value = None
+                        if " " in text:
+                            left,right = text.split(" ")
+
+                            if left.isnumeric():
+                                if right == "miles":
+                                    new_value = mile_to_km(int(left))
+                                elif right == "meters":
+                                    new_value = mtr_to_km(int(left))
+                                elif right == "km":
+                                    new_value = float(int(left))
+
+                        if new_value == None:
+                            managedb.delete(object=earthquake)
+                            print(f"remove record with id {earthquake.id}")
+                        else:
+                            managedb.update(object=earthquake,attr="depth",new_value=new_value)
+                            print(f"update record with id {earthquake.id} new value is {new_value}")
 
 def main():
+    print("-------validated format------")
     remove_invalid_records()
     not_be_nigative()
+    remove_dublications_and_invalid_data()
+    replace_curent_data()
+    print("")
 
 if __name__ == "__main__":
     main()
