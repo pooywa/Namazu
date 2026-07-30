@@ -12,7 +12,7 @@ def grouping(session):
                           Earthquake.region,
                           func.count("*").label("earthquake_count"),
                           func.avg(Earthquake.magnitude).label("avg_magnitude"),
-                          func.avg(Earthquake.depth).label("AVERAGE DEPTH"))\
+                          func.avg(Earthquake.depth).label("avg_depth"))\
                     .group_by(Earthquake.month,
                               Earthquake.category,
                               Earthquake.region)\
