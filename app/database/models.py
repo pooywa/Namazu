@@ -1,4 +1,6 @@
 from sqlalchemy.orm import DeclarativeBase,Mapped,mapped_column
+from sqlalchemy import Integer, String, Column
+from sqlalchemy import Float
 
 class Base(DeclarativeBase):
     pass
@@ -11,7 +13,14 @@ class Earthquake(Base):
     time: Mapped[str] = mapped_column(nullable=True)
     latitude:Mapped[str] = mapped_column(nullable=True)
     longitude:Mapped[str] = mapped_column(nullable=True)
-    depth:Mapped[str] = mapped_column(nullable=True)
-    magnitude:Mapped[str] = mapped_column(nullable=True)
+    depth: Mapped[float] = mapped_column(Float, nullable=True)
+    magnitude: Mapped[float] = mapped_column(Float, nullable=True)
     place:Mapped[str] = mapped_column(nullable=True)
     source:Mapped[str] = mapped_column(nullable=True)
+    month: Mapped[int] = mapped_column(Integer, nullable=True)
+    category: Mapped[str] = mapped_column(String, nullable=True)
+    region: Mapped[str] = mapped_column(String, nullable=True)
+    
+   
+
+
