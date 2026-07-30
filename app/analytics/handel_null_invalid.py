@@ -27,6 +27,7 @@ def handel_date_format():
             managedb.update(object=earthquake,attr="time",new_value=parsed_time)
         print("update formated time successfuly")
 
+
 remove_if_is_none_column = ["time","latitude","longitude","depth","magnitude"]
 
 def remove_invalid_records():
