@@ -6,6 +6,7 @@ COLLECTOR_MAPPING = {
     "Longitude": "longitude",
     "Depth(km)": "depth",
     "Magnitude": "magnitude",
+    "Notes" : "notes",
     "Region": "place",
 }
 
@@ -16,6 +17,7 @@ MESSY_MAPPING = {
     "depth": "depth",
     "mag": "magnitude",
     "place": "place",
+    "notes": "notes"
 }
 
 MAPPINGS = {
