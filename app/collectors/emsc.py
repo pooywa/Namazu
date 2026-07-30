@@ -28,6 +28,7 @@ CSV_COLUMNS = [
     "Depth(km)",
     "Magnitude",
     "Region",
+    "Notes"
 ]
 
 def get_last_30_days():
@@ -126,7 +127,8 @@ def read_earthquakes(driver, wait):
                     "Longitude": longitude,
                     "Depth(km)": depth,
                     "Magnitude": magnitude,
-                    "Region": region
+                    "Region": region,
+                    "Notes": ""
                 }
             )
         except StaleElementReferenceException:

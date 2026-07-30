@@ -15,3 +15,4 @@ class Earthquake(Base):
     magnitude:Mapped[str] = mapped_column(nullable=True)
     place:Mapped[str] = mapped_column(nullable=True)
     source:Mapped[str] = mapped_column(nullable=True)
+    notes:Mapped[str] = mapped_column(nullable=True)

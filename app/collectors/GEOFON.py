@@ -75,7 +75,9 @@ def extract_data(a):
     "Longitude": float(longitude),
     "Depth(km)": depth,
     "Magnitude": magnitude,
-    "Region": place,}
+    "Region": place,
+    "Notes": ""
+    }
     }
 
 def pars_data(page):

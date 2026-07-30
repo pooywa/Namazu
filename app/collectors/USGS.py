@@ -20,6 +20,7 @@ CSV_COLUMNS = [
     "Depth(km)",
     "Magnitude",
     "Region",
+    "Notes"
 ]
 
 
