@@ -60,3 +60,4 @@ class ManageDB:
         self.session.commit()
 
 managedb = ManageDB(session=session)
+
