@@ -43,7 +43,7 @@ class ManageDB:
                 obj = object
 
             if obj == None:
-                "object not found"
+                print("object not found")
                 return
             
             if isinstance(getattr(obj,attr),list) :
@@ -54,8 +54,12 @@ class ManageDB:
         except:
             self.session.rollback()
 
-    def delete(self,stmt):
-        obj = self.read(stmt,"one")
+    def delete(self,stmt=None,object=None):
+        if object :
+            obj = object
+        else:
+            obj = self.read(stmt,"one")
+
         self.session.delete(obj)
         self.session.commit()
 
