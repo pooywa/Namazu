@@ -31,7 +31,7 @@ def Record_count_for_each_source():
 
 def Average_magnitude_grouped_by():
 
-    stmt =  select(Earthquake.region,Earthquake.source,func.avg(Earthquake.magnitude))\
+    stmt =  select(Earthquake.region,Earthquake.source,func.avg(Earthquake.magnitude).label("avg_magnitude"))\
             .group_by(Earthquake.region,Earthquake.source).order_by(func.avg(Earthquake.magnitude).desc())
 
     result = managedb.read(stmt,'all')
