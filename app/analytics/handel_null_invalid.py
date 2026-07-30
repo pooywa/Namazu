@@ -2,6 +2,30 @@ from sqlalchemy import Select,inspect
 from app.database.db_manager import managedb
 from app.database.models import Earthquake
 from app.database.configuration import session
+from dateutil import parser
+import re
+from datetime import timezone
+
+def handel_date_format():
+    stmt = Select(Earthquake)
+    earthquakes:list[Earthquake] = managedb.read(stmt,"all")
+    if earthquakes:
+
+        for earthquake in earthquakes:
+            time_str = earthquake.time
+        
+            time_str = re.sub(r"\s+\d+\s+hr\s+\d+\s+min\s+ago$", "", time_str)
+        
+            use_dayfirst = True if "/" in time_str else False
+            parsed_time = parser.parse(time_str, dayfirst=use_dayfirst)
+
+            if parsed_time.tzinfo is None:
+                parsed_time = parsed_time.replace(tzinfo=timezone.utc)
+            else:
+                parsed_time = parsed_time.astimezone(timezone.utc)
+
+            managedb.update(object=earthquake,attr="time",new_value=parsed_time)
+        print("update formated time successfuly")
 
 
 remove_if_is_none_column = ["time","latitude","longitude","depth","magnitude"]
@@ -128,6 +152,7 @@ def main():
     not_be_nigative()
     remove_dublications_and_invalid_data()
     replace_curent_data()
+    handel_date_format()
     print("")
 
 if __name__ == "__main__":
