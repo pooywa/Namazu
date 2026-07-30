@@ -38,7 +38,7 @@ def main() -> None:
     if not csv_files:
         raise FileNotFoundError("No CSV files found in data directory.")
 
-    if len(csv_files) >= 4:
+    if len(csv_files) != 4:
         raise ValueError(f"Expected 4 CSV files, found {len(csv_files)}.")
 
     print("Starting import...")
