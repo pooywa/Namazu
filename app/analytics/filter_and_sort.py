@@ -6,7 +6,7 @@ from tabulate import tabulate
 def ten_recent_earthquakes():
     
     stmt =  select(Earthquake)\
-            .where(Earthquake.category == "Strong")\
+            .where(Earthquake.magnitude > 6)\
             .order_by(Earthquake.time.desc(),Earthquake.magnitude.desc())\
             .limit(10)
     
@@ -16,7 +16,7 @@ def ten_recent_earthquakes():
 def depth_and_mag():
     
         stmt =  select(Earthquake)\
-                .where(Earthquake.category == "strong",Earthquake.depth < 50)
+                .where(Earthquake.magnitude > 6,Earthquake.depth < 50)
 
         result = managedb.read(stmt,'all')
         return result
