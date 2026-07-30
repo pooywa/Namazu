@@ -20,7 +20,4 @@ class Earthquake(Base):
     month: Mapped[int] = mapped_column(Integer, nullable=True)
     category: Mapped[str] = mapped_column(String, nullable=True)
     region: Mapped[str] = mapped_column(String, nullable=True)
-    
-   
-
-
+    notes:Mapped[str] = mapped_column(nullable=True)
