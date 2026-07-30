@@ -1,5 +1,5 @@
-from db_manager import managedb
-from models import Earthquake
+from app.database.db_manager import managedb
+from app.database.models import Earthquake
 from sqlalchemy import Select,inspect,func
 
 
@@ -53,20 +53,23 @@ def example_data():
             print("table is empty")
 
 
+def main():
 
-print("----Show Tabls and types")
-show_tabls_name_type()
-print("")
-print("----Total Column")
-get_total_column()
-print("")
-print("----Record Count")
-record_count()
-print("")
-print("----Null Count")
-null_count()
-print("")
+    print("----Show Tabls and types")
+    show_tabls_name_type()
+    print("")
+    print("----Total Column")
+    get_total_column()
+    print("")
+    print("----Record Count")
+    record_count()
+    print("")
+    print("----Null Count")
+    null_count()
+    print("")
 
-print("----Example Data")
-example_data()
+    print("----Example Data")
+    example_data()
 
+if __name__ == "__main__":
+    main()
