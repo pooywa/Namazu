@@ -40,9 +40,18 @@ def Average_magnitude_grouped_by():
 def main():
 
     result1 = ten_recent_earthquakes()
+    print("=== Ten Most Recent Strong Earthquakes ===")
+    print(tabulate(result1,tablefmt="grid"))
     
     result2 = depth_and_mag()
+    print("=== Earthquakes With Magnitude > 6 and Depth < 50 km ===")
+    print(tabulate(result2,tablefmt="grid"))
 
     result3 = Record_count_for_each_source()
+    print("=== Record Count by Source ===")
+    print(tabulate(result3,tablefmt="grid"))
+
 
     result4 = Average_magnitude_grouped_by()
+    print("=== Average Magnitude by Region and Source ===")
+    print(tabulate(result4,tablefmt="grid"))
