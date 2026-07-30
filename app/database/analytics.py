@@ -7,114 +7,103 @@ def earthquakes_by_month():
     stmt = (
         select(
             Earthquake.month,
-            func.count().label("earthquake_count")
+            func.count().label("earthquake_count"),
         )
         .group_by(Earthquake.month)
         .order_by(Earthquake.month)
     )
-
     return managedb.session.execute(stmt).all()
 
 
-def earthquakes_by_region():
+def region_stats():
     stmt = (
         select(
             Earthquake.region,
-            func.count().label("earthquake_count")
+            func.count().label("earthquake_count"),
+            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
+            func.round(func.avg(Earthquake.depth), 2).label("avg_depth"),
+            func.max(Earthquake.magnitude).label("max_magnitude"),
+            func.min(Earthquake.depth).label("min_depth"),
+            func.max(Earthquake.depth).label("max_depth"),
         )
         .where(
             Earthquake.region.is_not(None),
-            Earthquake.region != ""
+            Earthquake.region != "",
         )
         .group_by(Earthquake.region)
-        .order_by(Earthquake.region)
+        .order_by(func.count().desc())
     )
-
     return managedb.session.execute(stmt).all()
 
 
-def average_magnitude_by_region():
+def by_region_month_category():
     stmt = (
         select(
             Earthquake.region,
-            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude")
+            Earthquake.month,
+            Earthquake.category,
+            func.count().label("count"),
+            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
+            func.round(func.avg(Earthquake.depth), 2).label("avg_depth"),
         )
         .where(
             Earthquake.region.is_not(None),
-            Earthquake.region != ""
+            Earthquake.region != "",
         )
-        .group_by(Earthquake.region)
-        .order_by(Earthquake.region)
+        .group_by(Earthquake.region, Earthquake.month, Earthquake.category)
+        .order_by(Earthquake.region, Earthquake.month, Earthquake.category)
     )
-
     return managedb.session.execute(stmt).all()
 
 
-def average_depth_by_region():
+def top_10_recent():
+    stmt = (
+        select(Earthquake)
+        .order_by(Earthquake.time.desc(), Earthquake.magnitude.desc())
+        .limit(10)
+    )
+    return managedb.session.execute(stmt).scalars().all()
+
+
+def strong_and_shallow():
+    stmt = (
+        select(Earthquake)
+        .where(
+            Earthquake.magnitude > 6,
+            Earthquake.depth < 50,
+        )
+        .order_by(Earthquake.magnitude.desc())
+    )
+    return managedb.session.execute(stmt).scalars().all()
+
+
+def count_by_source():
     stmt = (
         select(
-            Earthquake.region,
-            func.round(func.avg(Earthquake.depth), 2).label("avg_depth")
+            Earthquake.source,
+            func.count().label("count"),
         )
-        .where(
-            Earthquake.region.is_not(None),
-            Earthquake.region != ""
-        )
-        .group_by(Earthquake.region)
-        .order_by(Earthquake.region)
+        .group_by(Earthquake.source)
+        .order_by(func.count().desc())
     )
-
     return managedb.session.execute(stmt).all()
 
 
-def maximum_magnitude_by_region():
+def avg_magnitude_by_region_source():
     stmt = (
         select(
             Earthquake.region,
-            func.max(Earthquake.magnitude).label("max_magnitude")
+            Earthquake.source,
+            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
+            func.count().label("n"),
         )
         .where(
             Earthquake.region.is_not(None),
-            Earthquake.region != ""
+            Earthquake.region != "",
         )
-        .group_by(Earthquake.region)
-        .order_by(Earthquake.region)
+        .group_by(Earthquake.region, Earthquake.source)
+        .order_by(func.avg(Earthquake.magnitude).desc())
     )
-
-    return managedb.session.execute(stmt).all()
-
-
-def minimum_depth_by_region():
-    stmt = (
-        select(
-            Earthquake.region,
-            func.min(Earthquake.depth).label("min_depth")
-        )
-        .where(
-            Earthquake.region.is_not(None),
-            Earthquake.region != ""
-        )
-        .group_by(Earthquake.region)
-        .order_by(Earthquake.region)
-    )
-
-    return managedb.session.execute(stmt).all()
-
-
-def maximum_depth_by_region():
-    stmt = (
-        select(
-            Earthquake.region,
-            func.max(Earthquake.depth).label("max_depth")
-        )
-        .where(
-            Earthquake.region.is_not(None),
-            Earthquake.region != ""
-        )
-        .group_by(Earthquake.region)
-        .order_by(Earthquake.region)
-    )
-
     return managedb.session.execute(stmt).all()
 
 
@@ -124,38 +113,40 @@ def total_records():
 
 
 def main():
-    print("=== Earthquake Count By Month ===")
+    print("=== 1. Count by Month ===")
     for row in earthquakes_by_month():
         print(row)
 
-    print("\n=== Earthquake Count By Region ===")
-    total = 0
-    for region, count in earthquakes_by_region():
-        print(region, count)
-        total += count
-
-    print("\n=== Average Magnitude By Region ===")
-    for row in average_magnitude_by_region():
+    print("\n=== 2. Region Stats ===")
+    for row in region_stats():
         print(row)
 
-    print("\n=== Average Depth By Region ===")
-    for row in average_depth_by_region():
+    print("\n=== 3. Region + Month + Category ===")
+    for row in by_region_month_category():
         print(row)
 
-    print("\n=== Maximum Magnitude By Region ===")
-    for row in maximum_magnitude_by_region():
+    print("\n=== 4. Top 10 Recent ===")
+    for eq in top_10_recent():
+        print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
+
+    print("\n=== 5. Strong & Shallow (mag > 6, depth < 50) ===")
+    rows = strong_and_shallow()
+    if not rows:
+        print("No matching records")
+    else:
+        for eq in rows:
+            print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
+
+    print("\n=== 6. Count by Source ===")
+    for row in count_by_source():
         print(row)
 
-    print("\n=== Minimum Depth By Region ===")
-    for row in minimum_depth_by_region():
+    print("\n=== 7. Avg Magnitude by Region + Source ===")
+    for row in avg_magnitude_by_region_source():
         print(row)
 
-    print("\n=== Maximum Depth By Region ===")
-    for row in maximum_depth_by_region():
-        print(row)
-
-    print("\nGrouped Count :", total)
-    print("Table Count   :", total_records())
+    print("\n=== Total Records ===")
+    print(total_records())
 
 
 if __name__ == "__main__":
