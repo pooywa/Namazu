@@ -18,13 +18,15 @@ def grouping():
                               Earthquake.region,
                               Earthquake.category)
 
-            result =  managedb.read(stmt,'all')
+            result =  managedb.read(stmt,'all_row')
+            return result
 
 
 def main():
 
     # with tabulate we print our results in a pretty way
     result = grouping()
+    
     print(tabulate(result,
                    headers=['month',
                             'category',
@@ -34,5 +36,5 @@ def main():
                             'avg_depth'],
                     tablefmt="grid"))
 
-        
+  
 
