@@ -49,8 +49,15 @@ def add_rigion_finder():
 
 def main():
 
-    add_month_to_table()
+    try:
+        add_month_to_table()
+        print("month add successfuly")
 
-    add_label_of_category()
+        add_label_of_category()
+        print("label of category add successfuly")
 
-    add_rigion_finder()
+        add_rigion_finder()
+        print("rigion add successfuly")
+
+    except Exception as e :
+        print(f"error: {e}")

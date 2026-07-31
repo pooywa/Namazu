@@ -20,8 +20,8 @@ def region_stats():
         select(
             Earthquake.region,
             func.count().label("earthquake_count"),
-            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
-            func.round(func.avg(Earthquake.depth), 2).label("avg_depth"),
+            func.avg(Earthquake.magnitude).label("avg_magnitude"),
+            func.avg(Earthquake.depth).label("avg_depth"),
             func.max(Earthquake.magnitude).label("max_magnitude"),
             func.min(Earthquake.depth).label("min_depth"),
             func.max(Earthquake.depth).label("max_depth"),
@@ -43,8 +43,8 @@ def by_region_month_category():
             Earthquake.month,
             Earthquake.category,
             func.count().label("count"),
-            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
-            func.round(func.avg(Earthquake.depth), 2).label("avg_depth"),
+            func.avg(Earthquake.magnitude).label("avg_magnitude"),
+            func.avg(Earthquake.depth).label("avg_depth"),
         )
         .where(
             Earthquake.region.is_not(None),
@@ -94,7 +94,7 @@ def avg_magnitude_by_region_source():
         select(
             Earthquake.region,
             Earthquake.source,
-            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
+            func.avg(Earthquake.magnitude).label("avg_magnitude"),
             func.count().label("n"),
         )
         .where(
