@@ -13,7 +13,16 @@ def add_month_to_table():
         session.commit()
 
 def add_label_of_categury():
-    pass
+    stmt = select(Earthquake)
+    magnitudes = managedb.read(stmt,"all")
+
+    for magnitude in magnitudes:
+        if magnitude.magnitude < 4:
+            managedb.update("category","Weak",object=magnitude)
+        elif 4 <=magnitude.magnitude <= 6:
+            managedb.update("category","Moderate",object=magnitude)
+        else:
+            managedb.update("category","Strong",object=magnitude)
     
 
 def add_rigion_finder():
