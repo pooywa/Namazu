@@ -19,11 +19,11 @@ def add_label_of_category():
 
     for magnitude in magnitudes:
         if magnitude.magnitude < 4:
-            managedb.update("category","Weak",object=magnitude)
+            managedb.update(attr="category",new_value="Weak",object=magnitude)
         elif 4 <=magnitude.magnitude <= 6:
-            managedb.update("category","Moderate",object=magnitude)
+            managedb.update(attr="category",new_value="Moderate",object=magnitude)
         else:
-            managedb.update("category","Strong",object=magnitude)
+            managedb.update(attr="category",new_value="Strong",object=magnitude)
     
 
 def add_rigion_finder():
@@ -39,13 +39,13 @@ def add_rigion_finder():
             if 'km' in first_part_of_place:
                 region = first_part_of_place.strip().split(" ")[-1]
 
-                managedb.update('region',region,object=place)
+                managedb.update(attr='region',new_value=region,object=place)
 
             else:
-                managedb.update('region',first_part_of_place,object=place)
+                managedb.update(attr='region',new_value=first_part_of_place,object=place)
             
         else:
-            managedb.update('region',place.place,object=place)
+            managedb.update(attr='region',new_value=place.place,object=place)
 
 def main():
 
