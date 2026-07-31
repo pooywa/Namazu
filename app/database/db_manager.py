@@ -32,6 +32,7 @@ class ManageDB:
         "one_or_none": obj.scalar_one_or_none,
         "first": obj.scalars().first,
         "all": lambda: obj.scalars().all(),
+        "all_row": obj.all
         }
         return methods[method]()
 
