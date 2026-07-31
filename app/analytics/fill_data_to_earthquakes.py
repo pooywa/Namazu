@@ -13,7 +13,7 @@ def add_month_to_table():
         session.execute(stmt)
         session.commit()
 
-def add_label_of_categury():
+def add_label_of_category():
     stmt = select(Earthquake)
     magnitudes = managedb.read(stmt,"all")
 
@@ -51,6 +51,6 @@ def main():
 
     add_month_to_table()
 
-    add_label_of_categury()
+    add_label_of_category()
 
     add_rigion_finder()
