@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import  text
 from app.database.configuration import session
 
 indexes = {
@@ -24,3 +24,4 @@ def main():
         print("\n indexes earthquakes:")
         for row in result:
             print(f"  {row.indexname} -> {row.indexdef}")
+
