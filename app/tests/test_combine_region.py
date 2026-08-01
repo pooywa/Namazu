@@ -9,8 +9,8 @@ class TestCombineRegionAndCategory(unittest.TestCase):
     def test_grouping(self, mock_managedb):
        
         expected = [
-            ("08", "city", "Strong", 7, 6.1, 18.2),  #tof to alzaimer name city benevis
-            ("08", "city", "Moderate", 3, 4.8, 15.0), # bala ro bekhon
+            ("08", "Kanazawa", "Strong", 7, 6.1, 18.2),  #tof to alzaimer name city benevis
+            ("08", "honmachi", "Moderate", 3, 4.8, 15.0), # bala ro bekhon
         ]
         mock_managedb.read.return_value = expected
 
@@ -24,7 +24,7 @@ class TestCombineRegionAndCategory(unittest.TestCase):
     @patch("builtins.print")
     def test_main(self, mock_print, mock_grouping):
         mock_grouping.return_value = [
-            ("08", "x", "Strong", 7, 6.1, 18.2),  # x mishe name city
+            ("08", "kumano", "Strong", 7, 6.1, 18.2),  # x mishe name city
         ]
 
         main()
