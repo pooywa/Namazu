@@ -67,7 +67,7 @@ def fix_the_depth(out):
 
 def fix_the_mag(out):
     print("geting data from csv...")
-    df = pd.read_csv("japan_messy_earthquakes.csv")
+    df = out
     time.sleep(1)
 
     data = pd.to_numeric(df["mag"], errors="coerce")
