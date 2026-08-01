@@ -1,5 +1,5 @@
 from sqlalchemy import select,func,delete
-from app.database.configuration import session
+from app.database.db_manager import managedb
 from app.database.db_manager import managedb
 from app.database.models import Earthquake
 
@@ -22,10 +22,11 @@ def remove_dublicate_records():
         )
     )
 
+
     stmt = delete(Earthquake).where(Earthquake.id.in_(duplicate_ids))
 
-    session.execute(stmt)
-    session.commit()
+    managedb.session.execute(stmt)
+    managedb.session.commit()
 
 def main():
     remove_dublicate_records()

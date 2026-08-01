@@ -1,7 +1,6 @@
 from sqlalchemy import Select,text
-from app.database.db_manager import managedb
 from app.database.models import Earthquake
-from app.database.configuration import session
+from app.database.db_manager import managedb
 from app.database.preview_data import show_tabls_name_type
 from app.utils import restart_engine
 
@@ -33,7 +32,7 @@ USING time::TIMESTAMP;"""
 
     list_text = [mag_text,depth_text,time_text]
 
-    with session:
+    with managedb.session as session:
         for txt in list_text:
             session.execute(text(txt))
             session.commit()
