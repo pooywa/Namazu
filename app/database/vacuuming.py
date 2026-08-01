@@ -70,12 +70,12 @@ def fix_the_mag(out):
     df = out
     time.sleep(1)
 
-    data = pd.to_numeric(df["mag"], errors="coerce")
+    data = pd.to_numeric(df["magnitude"], errors="coerce")
 
     mean_of_mag = round(data[(data >= 0) & (data <= 10)].mean(),1)
 
-    print("filling the missing magnitute data by the avarage of the magnitute...")
-    df.loc[df["mag"].isna(),"mag"] = str(mean_of_mag)
+    print("filling the missing magnitude data by the avarage of the magnitude...")
+    df.loc[df["magnitude"].isna(),"magnitude"] = str(mean_of_mag)
     time.sleep(1)
 
     print("data updated.")
