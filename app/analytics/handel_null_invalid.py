@@ -64,7 +64,7 @@ def not_be_nigative():
 
 def remove_dublications_and_invalid_data():
 
-    nots_to_remove = ["DUPLICATE","Possible Duplicate","Very deep"]
+    nots_to_remove = ["DUPLICATE","Possible Duplicate"]
 
     for text in nots_to_remove:
         stmt = Select(Earthquake).where(Earthquake.notes == text)
