@@ -1,11 +1,12 @@
 from pathlib import Path
 import pandas as pd
+from app.database.vacuuming import vacuuming
 from app.database.configuration import engine
 from app.database.mapping import COLLECTOR_MAPPING, MAPPINGS, detect_source
 
+
 TABLE_NAME = "earthquakes"
 CHUNK_SIZE = 100
-
 
 def import_one_file(file_path: Path) -> int:
     filename = file_path.name
@@ -19,7 +20,10 @@ def import_one_file(file_path: Path) -> int:
         out = chunk[required_cols].rename(columns=mapping).copy()
         out["source"] = source
 
-        out.to_sql(
+        #here we clean the data
+        cleaned = vacuuming(out,file_path)
+
+        cleaned.to_sql(
             name=TABLE_NAME,
             con=engine,
             if_exists="append",
