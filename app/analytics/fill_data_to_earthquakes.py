@@ -36,7 +36,7 @@ def add_rigion_finder():
         if "," in place.place:
             first_part_of_place = place.place.strip().lower().split(",")[0]
 
-            if 'km' in first_part_of_place:
+            if re.search(r"\d+|\bkm\b", first_part_of_place):
                 region = first_part_of_place.strip().split(" ")[-1]
 
                 managedb.update(attr='region',new_value=region,object=place)

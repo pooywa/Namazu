@@ -69,17 +69,15 @@ def main():
 
         result2 = depth_and_mag()
         print("=== Earthquakes With Magnitude > 6 and Depth < 50 km ===")
-        
         print(tabulate(result2,headers=["id","time","latetude","longitude","depth","magnitude","place","source","month","category","rigen","nots"],tablefmt="grid"))
 
         result3 = Record_count_for_each_source()
         print("=== Record Count by Source ===")
-      
+
         print(tabulate(result3,headers=["source","numbers of source"],tablefmt="grid"))
 
 
         result4 = Average_magnitude_grouped_by()
         print("=== Average Magnitude by Region and Source ===")
-        
         print(tabulate(result4,headers=["region","source","avarage"],tablefmt="grid"))
 
