@@ -66,7 +66,20 @@ def fix_the_depth(out):
     df.to_csv("japan_messy_earthquakes.csv",index=False)
 
 def fix_the_mag(out):
-     pass    
+    print("geting data from csv...")
+    df = pd.read_csv("japan_messy_earthquakes.csv")
+    time.sleep(1)
+
+    data = pd.to_numeric(df["mag"], errors="coerce")
+
+    mean_of_mag = round(data[(data >= 0) & (data <= 10)].mean(),1)
+
+    print("filling the missing magnitute data by the avarage of the magnitute...")
+    df.loc[df["mag"].isna(),"mag"] = str(mean_of_mag)
+    time.sleep(1)
+
+    print("data updated.")
+    df.to_csv("japan_messy_earthquakes.csv",index=False)    
 
 def vacuuming(out):
     
