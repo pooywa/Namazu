@@ -1,5 +1,5 @@
 import unittest
-from app.database.mapping import map_row, detect_source, TARGET_COLUMNS
+from app.database.mapping import map_row, detect_source
 
 
 class TestMapping(unittest.TestCase):

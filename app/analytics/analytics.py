@@ -20,8 +20,8 @@ def region_stats():
         select(
             Earthquake.region,
             func.count().label("earthquake_count"),
-            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
-            func.round(func.avg(Earthquake.depth), 2).label("avg_depth"),
+            func.avg(Earthquake.magnitude).label("avg_magnitude"),
+            func.avg(Earthquake.depth).label("avg_depth"),
             func.max(Earthquake.magnitude).label("max_magnitude"),
             func.min(Earthquake.depth).label("min_depth"),
             func.max(Earthquake.depth).label("max_depth"),
@@ -43,8 +43,8 @@ def by_region_month_category():
             Earthquake.month,
             Earthquake.category,
             func.count().label("count"),
-            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
-            func.round(func.avg(Earthquake.depth), 2).label("avg_depth"),
+            func.avg(Earthquake.magnitude).label("avg_magnitude"),
+            func.avg(Earthquake.depth).label("avg_depth"),
         )
         .where(
             Earthquake.region.is_not(None),
@@ -94,7 +94,7 @@ def avg_magnitude_by_region_source():
         select(
             Earthquake.region,
             Earthquake.source,
-            func.round(func.avg(Earthquake.magnitude), 2).label("avg_magnitude"),
+            func.avg(Earthquake.magnitude).label("avg_magnitude"),
             func.count().label("n"),
         )
         .where(
@@ -125,25 +125,25 @@ def main():
     for row in by_region_month_category():
         print(row)
 
-    print("\n=== 4. Top 10 Recent ===")
-    for eq in top_10_recent():
-        print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
+    # print("\n=== 4. Top 10 Recent ===")
+    # for eq in top_10_recent():
+    #     print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
 
-    print("\n=== 5. Strong & Shallow (mag > 6, depth < 50) ===")
-    rows = strong_and_shallow()
-    if not rows:
-        print("No matching records")
-    else:
-        for eq in rows:
-            print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
+    # print("\n=== 5. Strong & Shallow (mag > 6, depth < 50) ===")
+    # rows = strong_and_shallow()
+    # if not rows:
+    #     print("No matching records")
+    # else:
+    #     for eq in rows:
+    #         print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
 
-    print("\n=== 6. Count by Source ===")
-    for row in count_by_source():
-        print(row)
+    # print("\n=== 6. Count by Source ===")
+    # for row in count_by_source():
+    #     print(row)
 
-    print("\n=== 7. Avg Magnitude by Region + Source ===")
-    for row in avg_magnitude_by_region_source():
-        print(row)
+    # print("\n=== 7. Avg Magnitude by Region + Source ===")
+    # for row in avg_magnitude_by_region_source():
+    #     print(row)
 
     print("\n=== Total Records ===")
     print(total_records())

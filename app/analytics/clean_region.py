@@ -43,10 +43,11 @@ def clean_regions():
     earthquakes = managedb.read(stmt, "all")
     updated = 0
     for earthquake in earthquakes:
-        earthquake.region = extract_region(earthquake.place)
+        # earthquake.region = extract_region(earthquake.place)
+        test = extract_region(earthquake.place)
         updated += 1
 
-    managedb.session.commit()
+    # managedb.session.commit()
     print(f"{updated} regions updated.")
 
 

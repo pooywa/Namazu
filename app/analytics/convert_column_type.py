@@ -3,6 +3,7 @@ from app.database.db_manager import managedb
 from app.database.models import Earthquake
 from app.database.configuration import session
 from app.database.preview_data import show_tabls_name_type
+from app.utils import restart_engine
 
 def conver_to_float():
 
@@ -32,11 +33,13 @@ USING time::TIMESTAMP;"""
 
     list_text = [mag_text,depth_text,time_text]
 
-    for txt in list_text:
-        session.execute(text(txt))
-        session.commit()
+    with session:
+        for txt in list_text:
+            session.execute(text(txt))
+            session.commit()
 
     print("table type successfuly changed ")
+    restart_engine.restart_en()
 
 
 def main():
