@@ -18,8 +18,6 @@ class TestEarthquakeImporter(unittest.TestCase):
         })
         mock_data.to_csv(self.test_csv_path, index=False)
 
-    def tearDown(self):
-        self.temp_dir.cleanup()
 
     @patch("app.database.importer.engine")
     @patch("app.database.importer.MAPPINGS")
@@ -40,5 +38,7 @@ class TestEarthquakeImporter(unittest.TestCase):
     
         self.assertTrue(mock_engine.connect.called or mock_engine.begin.called or mock_engine.execute.called or True)
 
+    def tearDown(self):
+        self.temp_dir.cleanup()
 if __name__ == "__main__":
     unittest.main()

@@ -15,6 +15,8 @@ def handel_date_format():
             time_str = earthquake.time
         
             time_str = re.sub(r"\s+\d+\s+hr\s+\d+\s+min\s+ago$", "", time_str)
+
+            time_str = re.sub(r"\.(?=Z|$|[+-]\d{2}:\d{2})", "", time_str)
         
             use_dayfirst = True if "/" in time_str else False
             parsed_time = parser.parse(time_str, dayfirst=use_dayfirst)
@@ -153,7 +155,11 @@ def main():
     not_be_nigative()
     remove_dublications_and_invalid_data()
     replace_curent_data()
-    handel_date_format()
+    try:
+        handel_date_format()
+    except Exception as e:
+        print(f'error: {e}')
+
     print("")
 
 if __name__ == "__main__":
