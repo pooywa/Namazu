@@ -1,5 +1,5 @@
 from sqlalchemy import  text
-from app.database.configuration import session
+from app.database.db_manager import managedb
 
 indexes = {
     "idx_earthquakes_region": "region",
@@ -8,17 +8,17 @@ indexes = {
 }
 
 def main():
-    with session:
+    with managedb.session:
         for name, col in indexes.items():
-            session.execute(text(f"CREATE INDEX IF NOT EXISTS {name} ON earthquakes({col});"))
-        session.commit()
+            managedb.session.execute(text(f"CREATE INDEX IF NOT EXISTS {name} ON earthquakes({col});"))
+        managedb.session.commit()
 
         
-        test = session.execute(text("SELECT * FROM earthquakes LIMIT 1;")).fetchone()
+        test = managedb.session.execute(text("SELECT * FROM earthquakes LIMIT 1;")).fetchone()
         print("tables:", test is not None)
 
         
-        result = session.execute(text(
+        result = managedb.session.execute(text(
             "SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'earthquakes' ORDER BY indexname;"
         ))
         print("\n indexes earthquakes:")
