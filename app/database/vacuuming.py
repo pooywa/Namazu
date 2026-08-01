@@ -65,8 +65,13 @@ def fix_the_depth(out):
     print("data updated.")
     df.to_csv("japan_messy_earthquakes.csv",index=False)
 
+def fix_the_mag(out):
+     pass    
+
 def vacuuming(out):
     
     fix_lan_and_lon(out)
 
     fix_the_depth(out)
+
+    fix_the_mag(out)
