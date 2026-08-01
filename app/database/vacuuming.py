@@ -1,8 +1,9 @@
 import requests
 import time
 import pandas as pd
+from pathlib import Path
 
-def fix_lan_and_lon(out):
+def fix_lan_and_lon(out,file_path):
         url = "https://nominatim.openstreetmap.org/search"
     
         headers = {
@@ -23,6 +24,7 @@ def fix_lan_and_lon(out):
     
         for index, row in s.iterrows():
             place = row["place"]
+
             params = {"q": place, "format": "json"}
     
             response = requests.get(url, params=params, headers=headers)
@@ -47,44 +49,37 @@ def fix_lan_and_lon(out):
             time.sleep(1)  
     
         df = df.drop(index=delete)
-        #add the csv change in sourse and change the type
+        df.to_csv(file_path,index=False)
 
-def fix_the_depth(out):
+        return df
+
+def fix_attr_data(out,attr):
     print("geting data from csv...")
     df = out
     time.sleep(1)
 
-    data = pd.to_numeric(df["depth"], errors="coerce")
+    data = pd.to_numeric(df[attr], errors="coerce")
 
-    filter_ = round(data[(data >= 0) & (data <= 500)].mean(),3)
+    if attr == "depth":
+        mean = round(data[(data >= 0) & (data <= 500)].mean(),2)
+    else:
+        mean = round(data[(data >= 0) & (data <= 10)].mean(),1)
 
-    print("filling the missing depth data by the avarage of the depth...")
-    df.loc[df["depth"].isna(),"depth"] = str(filter_)
+    print(f"filling the missing {attr} data by the avarage of the {attr}...")
+    df.loc[df[attr].isna(),attr] = str(mean)
     time.sleep(1)
 
     print("data updated.")
-    df.to_csv("japan_messy_earthquakes.csv",index=False)
 
-def fix_the_mag(out):
-    print("geting data from csv...")
-    df = out
-    time.sleep(1)
+    return df
+   
 
-    data = pd.to_numeric(df["magnitude"], errors="coerce")
+def vacuuming(out,file_path):
 
-    mean_of_mag = round(data[(data >= 0) & (data <= 10)].mean(),1)
+    fix_magnitude = fix_attr_data(out,file_path,"magnitude")
 
-    print("filling the missing magnitude data by the avarage of the magnitude...")
-    df.loc[df["magnitude"].isna(),"magnitude"] = str(mean_of_mag)
-    time.sleep(1)
+    fix_depth = fix_attr_data(fix_magnitude,file_path,"depth")
 
-    print("data updated.")
-    df.to_csv("japan_messy_earthquakes.csv",index=False)    
+    final_result = fix_lan_and_lon(fix_depth,file_path)
 
-def vacuuming(out):
-    
-    fix_lan_and_lon(out)
-
-    fix_the_depth(out)
-
-    fix_the_mag(out)
+    return final_result

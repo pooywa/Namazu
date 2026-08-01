@@ -21,7 +21,7 @@ def import_one_file(file_path: Path) -> int:
         out["source"] = source
 
         #here we clean the data
-        result = vacuuming(out)
+        result = vacuuming(out,file_path)
 
         result.to_sql(
             name=TABLE_NAME,
