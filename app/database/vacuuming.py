@@ -47,12 +47,26 @@ def fix_lan_and_lon(out):
             time.sleep(1)  
     
         df = df.drop(index=delete)
+        #add the csv change in sourse and change the type
 
-def fix_the_mag(out):
-     pass
+def fix_the_depth(out):
+    print("geting data from csv...")
+    df = out
+    time.sleep(1)
+
+    data = pd.to_numeric(df["depth"], errors="coerce")
+
+    filter_ = round(data[(data >= 0) & (data <= 500)].mean(),3)
+
+    print("filling the missing depth data by the avarage of the depth...")
+    df.loc[df["depth"].isna(),"depth"] = str(filter_)
+    time.sleep(1)
+
+    print("data updated.")
+    df.to_csv("japan_messy_earthquakes.csv",index=False)
 
 def vacuuming(out):
     
     fix_lan_and_lon(out)
 
-    fix_the_mag(out)
+    fix_the_depth(out)
