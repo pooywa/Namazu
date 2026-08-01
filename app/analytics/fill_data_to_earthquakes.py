@@ -1,5 +1,5 @@
 from sqlalchemy import select,extract,update
-from app.database.configuration import session
+from app.database import configuration 
 from app.database.db_manager import managedb
 from app.database.models import Earthquake
 import re
@@ -9,7 +9,7 @@ def add_month_to_table():
     stmt = update(Earthquake)\
            .values(month=extract("month", Earthquake.time))
 
-    with session:
+    with configuration.session as session:
         session.execute(stmt)
         session.commit()
 
@@ -18,9 +18,9 @@ def add_label_of_category():
     magnitudes = managedb.read(stmt,"all")
 
     for magnitude in magnitudes:
-        if magnitude.magnitude < 4:
+        if float(magnitude.magnitude) < 4:
             managedb.update(attr="category",new_value="Weak",object=magnitude)
-        elif 4 <=magnitude.magnitude <= 6:
+        elif 4 <=float(magnitude.magnitude) <= 6:
             managedb.update(attr="category",new_value="Moderate",object=magnitude)
         else:
             managedb.update(attr="category",new_value="Strong",object=magnitude)
