@@ -58,7 +58,8 @@ def not_be_nigative():
         earthquakes = managedb.read(stmt,"all")
         for earthquake in earthquakes:
             if earthquake:
-                managedb.delete(object=earthquake)
+                managedb.update(attr="depth",new_value=earthquake.depth.replace("-",""),object=earthquake)
+                # managedb.delete(object=earthquake)
                 print(f"remove earthquake with negative depth id:{earthquake.id}")
 
 def remove_dublications_and_invalid_data():

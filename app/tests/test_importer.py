@@ -21,9 +21,9 @@ class TestEarthquakeImporter(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    @patch("importer.engine")
-    @patch("importer.MAPPINGS")
-    @patch("importer.detect_source")
+    @patch("app.database.importer.engine")
+    @patch("app.database.importer.MAPPINGS")
+    @patch("app.database.importer.detect_source")
     def test_import_one_file(self, mock_detect_source, mock_mappings, mock_engine):
         mock_detect_source.return_value = "irsc"
 

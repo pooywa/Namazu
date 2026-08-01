@@ -1,7 +1,7 @@
 import unittest
 
 
-from app.analytics import (
+from app.analytics.analytics import (
     earthquakes_by_month,
     region_stats,
     top_10_recent,

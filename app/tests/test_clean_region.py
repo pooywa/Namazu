@@ -1,5 +1,5 @@
 import unittest
-from app.database.clean_region import extract_region
+from app.analytics.clean_region import extract_region
 
 
 class TestCleanRegion(unittest.TestCase):
