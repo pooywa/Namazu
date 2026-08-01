@@ -11,11 +11,12 @@ class TestRemoveDuplication(unittest.TestCase):
 
     def setUp(self):
 
-        engine = create_engine("sqlite:///:memory:")
-        test_session = Session(engine)
+        self.engine = create_engine("postgresql+psycopg://earthquakes_user:1234@localhost:5432/test_db_earthquakes")
+        test_session = Session(self.engine)
+        self.session = test_session
         configuration.session = test_session
         managedb.session = test_session
-        Earthquake.metadata.create_all(engine)
+        Earthquake.metadata.create_all(self.engine)
 
     def test_remove_duplicatoin(self):
         mod1 = Earthquake(
@@ -49,4 +50,6 @@ class TestRemoveDuplication(unittest.TestCase):
 
 
     def tearDown(self):
-        return super().tearDown()
+        self.session.close()
+        Earthquake.metadata.drop_all(self.engine)
+        self.engine.dispose()

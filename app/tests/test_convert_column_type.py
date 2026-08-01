@@ -11,16 +11,16 @@ class TestRemoveDuplication(unittest.TestCase):
 
     def setUp(self):
 
-        engine = create_engine("sqlite:///:memory:")
-        test_session = Session(engine)
+        self.engine = create_engine("postgresql+psycopg://earthquakes_user:1234@localhost:5432/test_db_earthquakes")
+        test_session = Session(self.engine)
         self.session = test_session
         configuration.session = test_session
         managedb.session = test_session
-        Earthquake.metadata.create_all(engine)
+        Earthquake.metadata.create_all(self.engine)
 
     def test_convert_to_float(self):
         mod1 = Earthquake(
-            time="2026-07-30 22:50:30 18 hr 15 min ago",
+            time="2026-07-30 22:50:30",
             latitude="32.600",
             longitude="130.700",
             depth="10",
@@ -39,7 +39,7 @@ class TestRemoveDuplication(unittest.TestCase):
 
     def test_change_column_type(self):
         mod1 = Earthquake(
-            time="2026-07-30 22:50:30 18 hr 15 min ago",
+            time="2026-07-14 11:37:32.2",
             latitude="32.600",
             longitude="130.700",
             depth="10.0",
@@ -51,15 +51,19 @@ class TestRemoveDuplication(unittest.TestCase):
 
         convert_table_type()
 
-        result = self.session.execute(text("PRAGMA table_info(earthquakes)"))
-        for s in result:
-            print(s)
+        result = self.session.execute(text("""
+        SELECT column_name, data_type
+        FROM information_schema.columns
+        WHERE table_name='earthquakes'
+        AND column_name='depth';
+        """))
 
-        # self.assertEqual(earthquakes.depth,"10.0")
-        # self.assertEqual(earthquakes.magnitude,"3.0")
+        self.assertEqual(result.first()[1],"double precision")
 
 
 
 
     def tearDown(self):
-        return super().tearDown()
+        self.session.close()
+        Earthquake.metadata.drop_all(self.engine)
+        self.engine.dispose()
