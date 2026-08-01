@@ -34,7 +34,7 @@ def main():
                             'earthquake_count',
                             'avg_magnitude',
                             'avg_depth'],
-                    tablefmt="grid"))
+                    tablefmt="heavy_grid"))
 
   
 

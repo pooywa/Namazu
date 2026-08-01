@@ -16,8 +16,7 @@ def ten_recent_earthquakes():
                 Earthquake.source,
                 Earthquake.month,
                 Earthquake.category,
-                Earthquake.region,
-                Earthquake.notes,)\
+                Earthquake.region,)\
             .where(Earthquake.magnitude > 6)\
             .order_by(Earthquake.time.desc(),Earthquake.magnitude.desc())\
             .limit(10)
@@ -38,8 +37,7 @@ def depth_and_mag():
                         Earthquake.source,
                         Earthquake.month,
                         Earthquake.category,
-                        Earthquake.region,
-                        Earthquake.notes,)\
+                        Earthquake.region,)\
                 .where(Earthquake.magnitude > 6,Earthquake.depth < 50)
 
         result = managedb.read(stmt,'all_row')
@@ -65,19 +63,19 @@ def main():
 
         result1 = ten_recent_earthquakes() 
         print("=== Ten Most Recent Strong Earthquakes ===") 
-        print(tabulate(result1,headers=["id","time","latetude","longitude","depth","magnitude","place","source","month","category","rigen","nots"],tablefmt="grid"))
+        print(tabulate(result1,headers=["id","time","latetude","longitude","depth","magnitude","place","source","month","category","rigen"],tablefmt="heavy_grid"))
 
         result2 = depth_and_mag()
         print("=== Earthquakes With Magnitude > 6 and Depth < 50 km ===")
-        print(tabulate(result2,headers=["id","time","latetude","longitude","depth","magnitude","place","source","month","category","rigen","nots"],tablefmt="grid"))
+        print(tabulate(result2,headers=["id","time","latetude","longitude","depth","magnitude","place","source","month","category","rigen"],tablefmt="heavy_grid"))
 
         result3 = Record_count_for_each_source()
         print("=== Record Count by Source ===")
 
-        print(tabulate(result3,headers=["source","numbers of source"],tablefmt="grid"))
+        print(tabulate(result3,headers=["source","numbers of source"],tablefmt="heavy_grid"))
 
 
         result4 = Average_magnitude_grouped_by()
         print("=== Average Magnitude by Region and Source ===")
-        print(tabulate(result4,headers=["region","source","avarage"],tablefmt="grid"))
+        print(tabulate(result4,headers=["region","source","avarage"],tablefmt="heavy_grid"))
 
