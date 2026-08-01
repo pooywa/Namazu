@@ -3,7 +3,7 @@ import time
 import pandas as pd
 from pathlib import Path
 
-def fix_lan_and_lon(out,file_path):
+def fix_lat_and_lon(out,file_path):
         url = "https://nominatim.openstreetmap.org/search"
     
         headers = {
@@ -20,9 +20,9 @@ def fix_lan_and_lon(out,file_path):
         df_result = (df["latitude"].isna() |
                 df["longitude"].isna())
     
-        s = df[df_result]
+        sort_dataFrame_by_null = df[df_result]
     
-        for index, row in s.iterrows():
+        for index, row in sort_dataFrame_by_null.iterrows():
             place = row["place"]
 
             params = {"q": place, "format": "json"}
@@ -76,10 +76,10 @@ def fix_attr_data(out,attr):
 
 def vacuuming(out,file_path):
 
-    fix_magnitude = fix_attr_data(out,file_path,"magnitude")
+    fix_magnitude = fix_attr_data(out,"magnitude")
 
-    fix_depth = fix_attr_data(fix_magnitude,file_path,"depth")
+    fix_depth = fix_attr_data(fix_magnitude,"depth")
 
-    final_result = fix_lan_and_lon(fix_depth,file_path)
+    final_result = fix_lat_and_lon(fix_depth,file_path)
 
     return final_result

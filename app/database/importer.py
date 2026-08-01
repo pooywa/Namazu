@@ -21,9 +21,9 @@ def import_one_file(file_path: Path) -> int:
         out["source"] = source
 
         #here we clean the data
-        result = vacuuming(out,file_path)
+        cleaned = vacuuming(out,file_path)
 
-        result.to_sql(
+        cleaned.to_sql(
             name=TABLE_NAME,
             con=engine,
             if_exists="append",
