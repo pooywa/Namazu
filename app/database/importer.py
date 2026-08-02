@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 from app.database.vacuuming import vacuuming
-from app.database.configuration import engine
+from app.database import configuration
 from app.database.mapping import COLLECTOR_MAPPING, MAPPINGS, detect_source
 from app.database.models import Earthquake
 
@@ -25,7 +25,7 @@ def import_one_file(file_path: Path) -> int:
 
         cleaned.to_sql(
             name=TABLE_NAME,
-            con=engine,
+            con=configuration.engine,
             if_exists="append",
             index=False,
             method="multi",
@@ -37,7 +37,7 @@ def import_one_file(file_path: Path) -> int:
 
 
 def main() -> None:
-    Earthquake.metadata.create_all(engine)
+    Earthquake.metadata.create_all(configuration.engine)
 
     csv_files = sorted(Path("data/raw").glob("*.csv"))
 
