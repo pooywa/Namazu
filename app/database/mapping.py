@@ -15,7 +15,7 @@ MESSY_MAPPING = {
     "latitude": "latitude",
     "longitude": "longitude",
     "depth": "depth",
-    "mag": "magnitude",
+    "magnitude": "magnitude",
     "place": "place",
     "notes": "notes"
 }
