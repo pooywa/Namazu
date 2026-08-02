@@ -30,11 +30,11 @@ if __name__ == "__main__":
 
         match user_choise:
             case "start":
-                # res_main()
+                res_main()
                 col_main()
-                # db_main()
-                # alyt_main()
-                # vis_main()
+                db_main()
+                alyt_main()
+                vis_main()
 
             case "exit":
                 print("koja miri lovley mentor taze berenj khis kardam :)")
