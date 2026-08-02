@@ -38,7 +38,7 @@ def number_of_record_by_area():
 def number_of_each_category():
     stmt = select(Earthquake.source,Earthquake.category,func.count("*"))\
                .group_by(Earthquake.source,Earthquake.category)\
-               .order_by(Earthquake.category)
+               .order_by(Earthquake.source)
     
     result = managedb.read(stmt,"all_row")
     return result
