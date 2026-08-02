@@ -7,13 +7,12 @@ def rating_dangerous_earthquakes():
 
     stmt = select(Earthquake.place,
                   Earthquake.category,
-                  func.avg(Earthquake.magnitude).label("avg_mag"),
-                  func.avg(Earthquake.depth).label("avg_depth"))\
-                  .where(Earthquake.magnitude > 6 , Earthquake.depth < 50)\
-                  .group_by(Earthquake.place,
-                            Earthquake.category,
-                            Earthquake.magnitude,
-                            Earthquake.depth)
+                  Earthquake.magnitude,
+                  Earthquake.depth)\
+                  .where(Earthquake.magnitude > 5 , Earthquake.depth < 50)\
+                  .order_by(Earthquake.magnitude.desc(),
+                            Earthquake.depth)\
+                  .limit(10)
     
     result = managedb.read(stmt,'all_row')   
 
@@ -29,3 +28,4 @@ def main():
                    ['place','category','average_magnitude','average_depth'],
                    tablefmt="heavy_grid"))      
     
+main()
