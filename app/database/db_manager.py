@@ -5,7 +5,7 @@ from app.database.configuration import session,engine
 from app.database.models import Earthquake
 
 #create table in database
-Earthquake.metadata.create_all(engine)
+# Earthquake.metadata.create_all(engine)
 
 #create manager for crud operation
 class ManageDB:

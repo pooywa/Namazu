@@ -3,7 +3,7 @@ import pandas as pd
 from app.database.vacuuming import vacuuming
 from app.database.configuration import engine
 from app.database.mapping import COLLECTOR_MAPPING, MAPPINGS, detect_source
-
+from app.database.models import Earthquake
 
 TABLE_NAME = "earthquakes"
 CHUNK_SIZE = 100
@@ -37,13 +37,15 @@ def import_one_file(file_path: Path) -> int:
 
 
 def main() -> None:
+    Earthquake.metadata.create_all(engine)
+
     csv_files = sorted(Path("data/raw").glob("*.csv"))
 
     if not csv_files:
         raise FileNotFoundError("No CSV files found in data directory.")
 
-    # if len(csv_files) != 4:
-    #     raise ValueError(f"Expected 4 CSV files, found {len(csv_files)}.")
+    if len(csv_files) != 4:
+        raise ValueError(f"Expected 4 CSV files, found {len(csv_files)}.")
 
     print("Starting import...")
     print("Warning: append mode is used. Start with an empty table to avoid duplicates.\n")

@@ -58,15 +58,19 @@ def fix_attr_data(out,attr):
     df = out
     time.sleep(1)
 
-    data = pd.to_numeric(df[attr], errors="coerce")
+    df[attr] = pd.to_numeric(df[attr], errors="coerce").astype(float)
 
     if attr == "depth":
-        mean = round(data[(data >= 0) & (data <= 500)].mean(),2)
+        mean = df.loc[(df[attr] >= 0) & (df[attr] <= 500),attr].mean()
     else:
-        mean = round(data[(data >= 0) & (data <= 10)].mean(),1)
+        mean = round(df.loc[(df[attr] >= 0) & (df[attr] <= 10),attr].mean(),1)
 
     print(f"filling the missing {attr} data by the avarage of the {attr}...")
-    df.loc[df[attr].isna(),attr] = str(mean)
+    print("attr:", attr)
+    print("dtype:", df[attr].dtype)
+    print("mean:", mean)
+    print(df[attr].head())
+    df.loc[df[attr].isna(),attr] = float(mean)
     time.sleep(1)
 
     print("data updated.")
