@@ -115,8 +115,7 @@ def analyze_japan_recent_quakes(session: Session):
 
     print()
 
-
-if __name__ == "__main__":
+def main():
 
     with Session(engine) as session:
         analyze_japan_recent_quakes(session)
