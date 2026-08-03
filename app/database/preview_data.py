@@ -49,12 +49,11 @@ def null_count():
     #     print(f"| {c.name} | {count} |")
 
     stmt = Select(*[ func.count("*") - func.count(col) for col in cols])
-    result = managedb.read(stmt, "all_row")
-    
+    result = managedb.read(stmt, "all_row")[0]
     print(
         tabulate(
             [result],
-            headers=[cols.id,cols.place],
+            headers=[col.name for col in cols],
             tablefmt="heavy_grid"
         )
     )
