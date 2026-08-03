@@ -70,4 +70,48 @@ def main():
                         ['source','category',"number of category"],
                         tablefmt="heavy_grid"))
 
+    print('''\n
+    1.EMSC provides the largest number of earthquake records (231), 
+    making it the primary data source. 
+    USGS contributes a moderate number of events (69), while GEOFON (35) 
+    and MESSY (30) provide smaller datasets.''')
+
+    print('''\n
+    2.GEOFON reports the highest average earthquake magnitude (4.99), 
+    followed closely by MESSY (4.82) and USGS (4.60). 
+    EMSC has the lowest average magnitude (3.74), suggesting it captures 
+    a larger number of weaker earthquakes.''')
+
+    print('''\n
+    3.MESSY reports the deepest earthquakes on average (129.36 km), 
+    while GEOFON (86.06 km) and USGS (85.40 km) show similar average depths. 
+    EMSC has the shallowest average depth (35.84 km), indicating it mainly 
+    records shallow seismic events.''')
+
+    print('''\n
+    4.The results show that the same earthquake regions are reported with 
+    different naming conventions across data sources. For example, 
+    'KYUSHU, JAPAN', 'Kyushu, Japan', and several similar variations refer 
+    to the same geographic area. EMSC reports the highest number of events 
+    for Kyushu (134), while GEOFON and USGS report fewer events for the same 
+    region. Similar inconsistencies are observed for locations such as 
+    Hokkaido, Bonin Islands, Izu Islands, Sea of Japan, and the East Coast 
+    of Honshu. These differences indicate that each source uses its own 
+    location naming standard.''')
+
+    print('''\n
+    5.Most earthquakes reported by EMSC are classified as Weak (147), 
+    with fewer Moderate (82) and Strong (2) events. 
+    GEOFON and USGS mainly contain Moderate earthquakes, with only a small 
+    number of Strong events. 
+    MESSY includes only Moderate earthquakes in this dataset.''')
+
+    print('''\n
+    To improve data quality, location names should be standardized before 
+    combining data from multiple sources. Normalizing place names allows 
+    earthquakes from the same region to be grouped correctly, reduces 
+    duplicate geographic entries, and enables more accurate regional 
+    analysis across all datasets.'''
+)
+
 main()
