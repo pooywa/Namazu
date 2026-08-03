@@ -107,11 +107,11 @@ def main():
     MESSY includes only Moderate earthquakes in this dataset.''')
 
     print('''\n
-    To improve data quality, location names should be standardized before 
-    combining data from multiple sources. Normalizing place names allows 
-    earthquakes from the same region to be grouped correctly, reduces 
-    duplicate geographic entries, and enables more accurate regional 
-    analysis across all datasets.'''
+    Overall, EMSC provides the broadest earthquake coverage, especially for 
+    smaller and shallow events, while GEOFON and USGS focus on relatively 
+    stronger earthquakes. MESSY contributes fewer but generally deeper events.
+    Combining these sources can improve both the completeness and quality of 
+    the earthquake database.'''
 )
 
 main()
