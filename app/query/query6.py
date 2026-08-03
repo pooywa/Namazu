@@ -3,70 +3,104 @@ from app.database.db_manager import managedb
 from app.database.models import Earthquake
 from tabulate import tabulate
 from colorama import Fore, Style
+from collections import defaultdict
 
 
 def total_record_of_each_source():
 
-    stmt = select(Earthquake.source, func.count("*"))\
-           .group_by(Earthquake.source)
+    stmt = (
+        select(
+            Earthquake.source,
+            func.count("*")
+        )
+        .group_by(Earthquake.source)
+    )
 
-    result = managedb.read(stmt, "all_row")
-    return result
+    return managedb.read(stmt, "all_row")
 
 
 def avg_mag_record_of_each_source():
 
-    stmt = select(Earthquake.source, func.avg(Earthquake.magnitude))\
-           .group_by(Earthquake.source)
+    stmt = (
+        select(
+            Earthquake.source,
+            func.avg(Earthquake.magnitude)
+        )
+        .group_by(Earthquake.source)
+    )
 
-    result = managedb.read(stmt, "all_row")
-    return result
+    return managedb.read(stmt, "all_row")
 
 
 def avg_depth_record_of_each_source():
 
-    stmt = select(Earthquake.source, func.avg(Earthquake.depth))\
-           .group_by(Earthquake.source)
+    stmt = (
+        select(
+            Earthquake.source,
+            func.avg(Earthquake.depth)
+        )
+        .group_by(Earthquake.source)
+    )
 
-    result = managedb.read(stmt, "all_row")
-    return result
+    return managedb.read(stmt, "all_row")
 
 
 def number_of_record_by_area():
 
-    stmt = select(
-        Earthquake.place,
-        Earthquake.source,
-        func.count("*")
-    )\
-    .group_by(
-        Earthquake.place,
-        Earthquake.source
-    )\
-    .order_by(Earthquake.place)
+    stmt = (
+        select(
+            Earthquake.place,
+            Earthquake.source,
+            func.count("*")
+        )
+        .group_by(
+            Earthquake.place,
+            Earthquake.source
+        )
+        .order_by(Earthquake.place)
+    )
 
-    result = managedb.read(stmt, "all_row")
-    return result
+    return managedb.read(stmt, "all_row")
 
 
 def number_of_each_category():
 
-    stmt = select(
-        Earthquake.source,
-        Earthquake.category,
-        func.count("*")
-    )\
-    .group_by(
-        Earthquake.source,
-        Earthquake.category
-    )\
-    .order_by(Earthquake.source)
+    stmt = (
+        select(
+            Earthquake.source,
+            Earthquake.category,
+            func.count("*")
+        )
+        .group_by(
+            Earthquake.source,
+            Earthquake.category
+        )
+        .order_by(Earthquake.source)
+    )
 
-    result = managedb.read(stmt, "all_row")
-    return result
+    return managedb.read(stmt, "all_row")
 
 
 def main():
+
+    print(
+        Fore.CYAN +
+        Style.BRIGHT +
+        "Question 6: Suggestion for combining sources to optimize data quality"
+        + Style.RESET_ALL
+    )
+
+
+    # -------------------- Collect Data --------------------
+
+    total = total_record_of_each_source()
+    avg_mag = avg_mag_record_of_each_source()
+    avg_depth = avg_depth_record_of_each_source()
+    area = number_of_record_by_area()
+    category = number_of_each_category()
+
+
+    # -------------------- Tables --------------------
 
     print(
         Fore.CYAN +
@@ -75,12 +109,11 @@ def main():
         Style.RESET_ALL
     )
 
-    total = total_record_of_each_source()
     print(
         Fore.YELLOW +
         tabulate(
             total,
-            ['sources', 'number of sources'],
+            ["Source", "Number of Records"],
             tablefmt="heavy_grid"
         ) +
         Style.RESET_ALL
@@ -94,12 +127,11 @@ def main():
         Style.RESET_ALL
     )
 
-    avg_mag = avg_mag_record_of_each_source()
     print(
         Fore.GREEN +
         tabulate(
             avg_mag,
-            ['sources', 'average magnitude of each sources'],
+            ["Source", "Average Magnitude"],
             tablefmt="heavy_grid"
         ) +
         Style.RESET_ALL
@@ -113,12 +145,11 @@ def main():
         Style.RESET_ALL
     )
 
-    avg_depth = avg_depth_record_of_each_source()
     print(
         Fore.BLUE +
         tabulate(
             avg_depth,
-            ['sources', 'average depth of each sources'],
+            ["Source", "Average Depth"],
             tablefmt="heavy_grid"
         ) +
         Style.RESET_ALL
@@ -132,12 +163,11 @@ def main():
         Style.RESET_ALL
     )
 
-    area = number_of_record_by_area()
     print(
         Fore.MAGENTA +
         tabulate(
             area,
-            ['place', 'source', "number of area"],
+            ["Place", "Source", "Number of Records"],
             tablefmt="heavy_grid"
         ) +
         Style.RESET_ALL
@@ -151,66 +181,118 @@ def main():
         Style.RESET_ALL
     )
 
-    category = number_of_each_category()
     print(
         Fore.YELLOW +
         tabulate(
             category,
-            ['source', 'category', "number of category"],
+            ["Source", "Category", "Number"],
             tablefmt="heavy_grid"
         ) +
         Style.RESET_ALL
     )
 
 
+    # -------------------- Dynamic Analysis --------------------
+
+
+    top_source = max(
+        total,
+        key=lambda x: x[1]
+    )
+
+    highest_mag = max(
+        avg_mag,
+        key=lambda x: x[1]
+    )
+
+    lowest_mag = min(
+        avg_mag,
+        key=lambda x: x[1]
+    )
+
+    deepest = max(
+        avg_depth,
+        key=lambda x: x[1]
+    )
+
+    shallowest = min(
+        avg_depth,
+        key=lambda x: x[1]
+    )
+
+
+    print(
+        Fore.CYAN +
+        Style.BRIGHT +
+        "\n=== Dynamic Analysis Summary ===" +
+        Style.RESET_ALL
+    )
+
+
+    print(
+        f"""
+1. {top_source[0]} provides the largest number of earthquake records
+({top_source[1]}), making it the primary data source.
+"""
+    )
+
+
+    print(
+        f"""
+2. {highest_mag[0]} reports the highest average earthquake magnitude
+({highest_mag[1]:.2f}), while {lowest_mag[0]} reports the lowest average
+magnitude ({lowest_mag[1]:.2f}).
+"""
+    )
+
+
+    print(
+        f"""
+3. {deepest[0]} reports the deepest earthquakes on average
+({deepest[1]:.2f} km), while {shallowest[0]} reports the shallowest
+earthquakes ({shallowest[1]:.2f} km).
+"""
+    )
+
+
+    print(
+        "\n4. Earthquake category distribution by source:"
+    )
+
+    summary = defaultdict(dict)
+
+    for source, category_name, count in category:
+        summary[source][category_name] = count
+
+
+    for source, values in summary.items():
+
+        print(
+            f"""
+{source}:
+    Weak: {values.get('Weak', 0)}
+    Moderate: {values.get('Moderate', 0)}
+    Strong: {values.get('Strong', 0)}
+"""
+        )
+
+
+    print(
+        f"""
+5. Overall conclusion:
+
+{top_source[0]} provides the broadest earthquake coverage with
+{top_source[1]} recorded events.
+
+{highest_mag[0]} reports the highest average magnitude
+({highest_mag[1]:.2f}), while {deepest[0]} records the deepest earthquakes
+({deepest[1]:.2f} km).
+
+Combining multiple earthquake sources can improve database completeness,
+accuracy, and reliability.
+"""
+    )
+
+
 # if __name__ == "__main__":
 #     main()
-    print(tabulate(category,
-                        ['source','category',"number of category"],
-                        tablefmt="heavy_grid"))
-
-    print('''\n
-    1.EMSC provides the largest number of earthquake records (231), 
-    making it the primary data source. 
-    USGS contributes a moderate number of events (69), while GEOFON (35) 
-    and MESSY (30) provide smaller datasets.''')
-
-    print('''\n
-    2.GEOFON reports the highest average earthquake magnitude (4.99), 
-    followed closely by MESSY (4.82) and USGS (4.60). 
-    EMSC has the lowest average magnitude (3.74), suggesting it captures 
-    a larger number of weaker earthquakes.''')
-
-    print('''\n
-    3.MESSY reports the deepest earthquakes on average (129.36 km), 
-    while GEOFON (86.06 km) and USGS (85.40 km) show similar average depths. 
-    EMSC has the shallowest average depth (35.84 km), indicating it mainly 
-    records shallow seismic events.''')
-
-    print('''\n
-    4.The results show that the same earthquake regions are reported with 
-    different naming conventions across data sources. For example, 
-    'KYUSHU, JAPAN', 'Kyushu, Japan', and several similar variations refer 
-    to the same geographic area. EMSC reports the highest number of events 
-    for Kyushu (134), while GEOFON and USGS report fewer events for the same 
-    region. Similar inconsistencies are observed for locations such as 
-    Hokkaido, Bonin Islands, Izu Islands, Sea of Japan, and the East Coast 
-    of Honshu. These differences indicate that each source uses its own 
-    location naming standard.''')
-
-    print('''\n
-    5.Most earthquakes reported by EMSC are classified as Weak (147), 
-    with fewer Moderate (82) and Strong (2) events. 
-    GEOFON and USGS mainly contain Moderate earthquakes, with only a small 
-    number of Strong events. 
-    MESSY includes only Moderate earthquakes in this dataset.''')
-
-    print('''\n
-    Overall, EMSC provides the broadest earthquake coverage, especially for 
-    smaller and shallow events, while GEOFON and USGS focus on relatively 
-    stronger earthquakes. MESSY contributes fewer but generally deeper events.
-    Combining these sources can improve both the completeness and quality of 
-    the earthquake database.'''
-)
-
-main()

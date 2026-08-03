@@ -20,7 +20,7 @@ def main():
     print(
         Fore.CYAN +
         Style.BRIGHT +
-        "4. Comparison of the number of large earthquakes for each source.?" +
+        "Question 4: Comparison of the number of large earthquakes for each source.?" +
         Style.RESET_ALL
     )
 
