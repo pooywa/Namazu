@@ -49,6 +49,3 @@ def main():
         Style.RESET_ALL
     )
 
-
-# if __name__ == "__main__":
-#     main()

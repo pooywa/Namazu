@@ -145,7 +145,6 @@ def distance_of_tokyo():
         gridsize=30,
     )
 
-    # plt.hist(distance, bins=20)
     plt.xlabel("Distance from Tokyo (km)")
     plt.ylabel("Earthquake count")
     plt.gca().xaxis.set_major_locator(
