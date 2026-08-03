@@ -69,5 +69,3 @@ def main():
     print(tabulate(category,
                         ['source','category',"number of category"],
                         tablefmt="heavy_grid"))
-
-main()
