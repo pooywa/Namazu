@@ -7,7 +7,7 @@ from app.query import main as q_main
 
 if __name__ == "__main__":
 
-    menuitem = ["start","exit","test"]
+    menuitem = ["start","exit"]
 
     is_runing = True
 
