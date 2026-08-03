@@ -1,6 +1,7 @@
 from app.database.db_manager import managedb
 from app.database.models import Earthquake
 from sqlalchemy import Select,inspect,func
+from tabulate import tabulate
 
 
 sources = ["EMSC","GEOFON","USGS","MESSY"]
@@ -8,37 +9,57 @@ sources = ["EMSC","GEOFON","USGS","MESSY"]
 def show_tabls_name_type():
     columns = inspect(Earthquake).columns
 
-    print("| Column Name | Data Type |")
-    print("|-------------|-----------|")
-    for c in columns:
-        print(f"| {c.name}          | {c.type} |")
+    print(tabulate(columns,['Column Name ','Data Type'],tablefmt="heavy_grid"))
+
+    # print("| Column Name | Data Type |")
+    # print("|-------------|-----------|")
+    # for c in columns:
+    #     print(f"| {c.name}          | {c.type} |")
 
 def get_total_column():
     columns = inspect(Earthquake).columns
     print("Total columns:",len(columns))
 
 def record_count():
-    total_record = 0
+    # total_record = 0
 
-    print("| Source | Records |")
-    for source in sources: 
-        stmt = Select(Earthquake).where(Earthquake.source == source)
-        r_c =  managedb.read(stmt,"all")
-        total_record += len(r_c)
-        print(f"| {source}   | {len(r_c)} |")
+    # print("| Source | Records |")
+    # for source in sources: 
+    #     stmt = Select(Earthquake).where(Earthquake.source == source)
+    #     r_c =  managedb.read(stmt,"all")
+    #     total_record += len(r_c)
+    #     print(f"| {source}   | {len(r_c)} |")
 
-    print("")
-    print("Total records: ",total_record)
+    # print("")
+    # print("Total records: ",total_record)
+
+    stmt = Select(Earthquake.source,func.count('*')).group_by(Earthquake.source)
+    r_c =  managedb.read(stmt,"all_row")
+
+    print(tabulate(r_c,["source","record"],tablefmt="heavy_grid"))
+
+    total_record = sum(row[1] for row in r_c)
+    print("\nTotal records: ",total_record)
 
 def null_count():
-    columns = inspect(Earthquake).columns
+    cols = inspect(Earthquake).columns
 
-    print("| Column | NULL Count |")
-    for c in columns:
-        stmt = Select(func.count()).where(c.is_(None))
-        count = managedb.read(stmt,"all")
-        print(f"| {c.name} | {count} |")
+    # print("| Column | NULL Count |")
+    # for c in columns:
+    #     stmt = Select(func.count()).where(c.is_(None))
+    #     count = managedb.read(stmt,"all")
+    #     print(f"| {c.name} | {count} |")
 
+    stmt = Select(*[ func.count("*") - func.count(col) for col in cols])
+    result = managedb.read(stmt, "one")
+
+    print(
+        tabulate(
+            [result],
+            headers=[col.name for col in cols],
+            tablefmt="heavy_grid"
+        )
+    )
 def example_data():
 
     for source in sources:
@@ -47,8 +68,19 @@ def example_data():
         print("")
         print(f"example of {source}")
         if earthquake:
-            print("| time | latitude | longitude | magnitude | place |")
-            print(f"| {earthquake.time } | {earthquake.latitude } | {earthquake.longitude } | {earthquake.magnitude } | {earthquake.place } |")
+             print(
+            tabulate(
+                [[
+                    earthquake.time,
+                    earthquake.latitude,
+                    earthquake.longitude,
+                    earthquake.magnitude,
+                    earthquake.place,
+                ]],
+                headers=["time", "latitude", "longitude", "magnitude", "place"],
+                tablefmt="heavy_grid",
+            )
+        )
         else:
             print("table is empty")
 
