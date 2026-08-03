@@ -3,6 +3,7 @@ from app.database import main as db_main
 from app.analytics import main as alyt_main
 from app.visualization import main as vis_main
 from app.utils.reseting import main as res_main
+from app.query import main as q_main
 
 if __name__ == "__main__":
 
@@ -35,6 +36,7 @@ if __name__ == "__main__":
                 db_main()
                 alyt_main()
                 vis_main()
+                q_main()
 
             case "exit":
                 print("koja miri lovley mentor taze berenj khis kardam :)")
