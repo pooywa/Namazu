@@ -9,12 +9,10 @@ sources = ["EMSC","GEOFON","USGS","MESSY"]
 def show_tabls_name_type():
     columns = inspect(Earthquake).columns
 
-    print(tabulate(columns,['Column Name ','Data Type'],tablefmt="heavy_grid"))
-
-    # print("| Column Name | Data Type |")
-    # print("|-------------|-----------|")
-    # for c in columns:
-    #     print(f"| {c.name}          | {c.type} |")
+    result = []
+    for c in columns:
+        result.append((c.name,c.type))
+    print(tabulate(result,['Column Name ','Data Type'],tablefmt="heavy_grid"))
 
 def get_total_column():
     columns = inspect(Earthquake).columns
@@ -42,7 +40,7 @@ def record_count():
     print("\nTotal records: ",total_record)
 
 def null_count():
-    cols = inspect(Earthquake).columns
+    cols = Earthquake.__table__.columns
 
     # print("| Column | NULL Count |")
     # for c in columns:
@@ -51,12 +49,12 @@ def null_count():
     #     print(f"| {c.name} | {count} |")
 
     stmt = Select(*[ func.count("*") - func.count(col) for col in cols])
-    result = managedb.read(stmt, "one")
-
+    result = managedb.read(stmt, "all_row")
+    
     print(
         tabulate(
             [result],
-            headers=[col.name for col in cols],
+            headers=[cols.id,cols.place],
             tablefmt="heavy_grid"
         )
     )
