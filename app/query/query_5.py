@@ -136,6 +136,3 @@ def main():
     with Session(engine) as session:
         analyze_japan_recent_quakes(session)
 
-
-# if __name__ == "__main__":
-#     main()

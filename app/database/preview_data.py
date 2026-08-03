@@ -19,17 +19,6 @@ def get_total_column():
     print("Total columns:",len(columns))
 
 def record_count():
-    # total_record = 0
-
-    # print("| Source | Records |")
-    # for source in sources: 
-    #     stmt = Select(Earthquake).where(Earthquake.source == source)
-    #     r_c =  managedb.read(stmt,"all")
-    #     total_record += len(r_c)
-    #     print(f"| {source}   | {len(r_c)} |")
-
-    # print("")
-    # print("Total records: ",total_record)
 
     stmt = Select(Earthquake.source,func.count('*')).group_by(Earthquake.source)
     r_c =  managedb.read(stmt,"all_row")
@@ -42,11 +31,6 @@ def record_count():
 def null_count():
     cols = Earthquake.__table__.columns
 
-    # print("| Column | NULL Count |")
-    # for c in columns:
-    #     stmt = Select(func.count()).where(c.is_(None))
-    #     count = managedb.read(stmt,"all")
-    #     print(f"| {c.name} | {count} |")
 
     stmt = Select(*[ func.count("*") - func.count(col) for col in cols])
     result = managedb.read(stmt, "all_row")[0]

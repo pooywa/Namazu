@@ -21,7 +21,7 @@ if __name__ == "__main__":
             user_choise = menuitem[int(input("chose a number: "))-1] 
 
         except ValueError as e:
-            print("please enter just a number example (1-9)")
+            print(f"please enter just a number example (1-{len(menuitem)})")
             continue
 
         except IndexError as e:
@@ -41,8 +41,6 @@ if __name__ == "__main__":
             case "exit":
                 print("koja miri lovley mentor taze berenj khis kardam :)")
                 is_runing = False
-            case "testing":
-                print("all test pass ")
 
 
 

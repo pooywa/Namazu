@@ -51,6 +51,3 @@ def main():
         f"{Style.RESET_ALL} kilometers."
     )
 
-
-# if __name__ == "__main__":
-#     main()

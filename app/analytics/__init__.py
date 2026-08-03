@@ -13,7 +13,6 @@ def main():
     conv_main()
     rem_main()
     fill_main()
-    # clean_regions()
     analy_main()
     comb_main()
     filter_main()

@@ -91,7 +91,6 @@ def main():
     )
 
 
-    # -------------------- Collect Data --------------------
 
     total = total_record_of_each_source()
     avg_mag = avg_mag_record_of_each_source()
@@ -100,7 +99,6 @@ def main():
     category = number_of_each_category()
 
 
-    # -------------------- Tables --------------------
 
     print(
         Fore.CYAN +
@@ -190,10 +188,6 @@ def main():
         ) +
         Style.RESET_ALL
     )
-
-
-    # -------------------- Dynamic Analysis --------------------
-
 
     top_source = max(
         total,
@@ -292,7 +286,3 @@ Combining multiple earthquake sources can improve database completeness,
 accuracy, and reliability.
 """
     )
-
-
-# if __name__ == "__main__":
-#     main()
