@@ -3,6 +3,7 @@ from app.database.db_manager import managedb
 from app.database.models import Earthquake
 from tabulate import tabulate
 from colorama import Fore, Style
+from collections import defaultdict
 
 
 def total_record_of_each_source():
@@ -67,6 +68,14 @@ def number_of_each_category():
 
 
 def main():
+    
+    print(
+            Fore.CYAN +
+            Style.BRIGHT +
+            "Question 6: sugestion for combinng sources to optimize the quiality of all data?" +
+            Style.RESET_ALL
+        )
+       
 
     print(
         Fore.CYAN +
@@ -162,55 +171,55 @@ def main():
         Style.RESET_ALL
     )
 
-
-# if __name__ == "__main__":
-#     main()
     print(tabulate(category,
                         ['source','category',"number of category"],
                         tablefmt="heavy_grid"))
 
-    print('''\n
-    1.EMSC provides the largest number of earthquake records (231), 
-    making it the primary data source. 
-    USGS contributes a moderate number of events (69), while GEOFON (35) 
-    and MESSY (30) provide smaller datasets.''')
 
-    print('''\n
-    2.GEOFON reports the highest average earthquake magnitude (4.99), 
-    followed closely by MESSY (4.82) and USGS (4.60). 
-    EMSC has the lowest average magnitude (3.74), suggesting it captures 
-    a larger number of weaker earthquakes.''')
+    # -------------------- Analysis Summary --------------------
 
-    print('''\n
-    3.MESSY reports the deepest earthquakes on average (129.36 km), 
-    while GEOFON (86.06 km) and USGS (85.40 km) show similar average depths. 
-    EMSC has the shallowest average depth (35.84 km), indicating it mainly 
-    records shallow seismic events.''')
+    top_source = max(total, key=lambda x: x[1])
 
-    print('''\n
-    4.The results show that the same earthquake regions are reported with 
-    different naming conventions across data sources. For example, 
-    'KYUSHU, JAPAN', 'Kyushu, Japan', and several similar variations refer 
-    to the same geographic area. EMSC reports the highest number of events 
-    for Kyushu (134), while GEOFON and USGS report fewer events for the same 
-    region. Similar inconsistencies are observed for locations such as 
-    Hokkaido, Bonin Islands, Izu Islands, Sea of Japan, and the East Coast 
-    of Honshu. These differences indicate that each source uses its own 
-    location naming standard.''')
+    print(
+        f"\n1. {top_source[0]} provides the largest number of earthquake "
+        f"records ({top_source[1]}), making it the primary data source."
+    )
 
-    print('''\n
-    5.Most earthquakes reported by EMSC are classified as Weak (147), 
-    with fewer Moderate (82) and Strong (2) events. 
-    GEOFON and USGS mainly contain Moderate earthquakes, with only a small 
-    number of Strong events. 
-    MESSY includes only Moderate earthquakes in this dataset.''')
+    highest_mag = max(avg_mag, key=lambda x: x[1])
+    lowest_mag = min(avg_mag, key=lambda x: x[1])
 
-    print('''\n
-    Overall, EMSC provides the broadest earthquake coverage, especially for 
-    smaller and shallow events, while GEOFON and USGS focus on relatively 
-    stronger earthquakes. MESSY contributes fewer but generally deeper events.
-    Combining these sources can improve both the completeness and quality of 
-    the earthquake database.'''
-)
+    print(
+        f"\n2. {highest_mag[0]} reports the highest average earthquake "
+        f"magnitude ({highest_mag[1]:.2f}), while {lowest_mag[0]} has the "
+        f"lowest average magnitude ({lowest_mag[1]:.2f})."
+    )
 
-main()
+    deepest = max(avg_depth, key=lambda x: x[1])
+    shallowest = min(avg_depth, key=lambda x: x[1])
+
+    print(
+        f"\n3. {deepest[0]} reports the deepest earthquakes on average "
+        f"({deepest[1]:.2f} km), while {shallowest[0]} reports the "
+        f"shallowest earthquakes ({shallowest[1]:.2f} km)."
+    )
+
+    print("\n4. Earthquake categories by source:")
+
+    summary = defaultdict(dict)
+
+    for source, category_name, count in category:
+        summary[source][category_name] = count
+
+    for source, values in summary.items():
+        print(
+            f"   {source}: "
+            f"Weak={values.get('Weak', 0)}, "
+            f"Moderate={values.get('Moderate', 0)}, "
+            f"Strong={values.get('Strong', 0)}"
+        )
+
+    print(
+        f"\n5. Overall, {top_source[0]} provides the broadest earthquake "
+        f"coverage. {highest_mag[0]} reports the highest average magnitude, "
+        f"while {deepest[0]} records the deepest earthquakes."
+    )
