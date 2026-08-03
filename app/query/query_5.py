@@ -137,5 +137,5 @@ def main():
         analyze_japan_recent_quakes(session)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

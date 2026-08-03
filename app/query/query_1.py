@@ -76,5 +76,5 @@ def main():
         analyze_small_quakes(session)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
