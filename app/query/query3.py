@@ -28,4 +28,3 @@ def main():
                    ['place','category','average_magnitude','average_depth'],
                    tablefmt="heavy_grid"))      
     
-main()
