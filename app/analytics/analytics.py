@@ -125,26 +125,6 @@ def main():
     for row in by_region_month_category():
         print(row)
 
-    # print("\n=== 4. Top 10 Recent ===")
-    # for eq in top_10_recent():
-    #     print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
-
-    # print("\n=== 5. Strong & Shallow (mag > 6, depth < 50) ===")
-    # rows = strong_and_shallow()
-    # if not rows:
-    #     print("No matching records")
-    # else:
-    #     for eq in rows:
-    #         print(eq.id, eq.time, eq.magnitude, eq.depth, eq.place, eq.source)
-
-    # print("\n=== 6. Count by Source ===")
-    # for row in count_by_source():
-    #     print(row)
-
-    # print("\n=== 7. Avg Magnitude by Region + Source ===")
-    # for row in avg_magnitude_by_region_source():
-    #     print(row)
-
     print("\n=== Total Records ===")
     print(total_records())
 

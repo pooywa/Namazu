@@ -4,22 +4,44 @@ from app.database.models import Earthquake
 from app.database.db_manager import managedb
 from pprint import pprint
 from haversine import haversine
-
+import numpy as np
+from matplotlib.colors import LogNorm
+import matplotlib.ticker as ticker
 
 def histogram_chart():
     stmt = Select(Earthquake.source).group_by(Earthquake.source)
-    sources = managedb.read(stmt,"all")
+    sources = managedb.read(stmt, "all")
 
+    plt.figure(figsize=(10, 6))
+
+    colors = {
+        "GEOFON": "green",
+        "MESSY": "lime",
+        "EMSC": "blue",
+        "USGS": "red"
+    }
     for source in sources:
-        stmt = Select(Earthquake.magnitude).where(Earthquake.source == source)
-        magnitudes = managedb.read(stmt,"all")
-        plt.hist(magnitudes, bins=[0, 2, 4, 6, 8, 10])
-        plt.xlabel("Magnitude")
-        plt.ylabel("Count")
-        plt.title(source)
-        plt.show()
+        stmt = Select(Earthquake.magnitude).where(
+            Earthquake.source == source
+        )
 
+        magnitudes = managedb.read(stmt, "all")
+        plt.hist(
+            magnitudes,
+            bins=15,
+            alpha=0.6,
+            label=source,
+            color=colors[source],
+            edgecolor="black"
+        )
 
+    plt.xlabel("Magnitude")
+    plt.ylabel("Count")
+    plt.title("Magnitude Distribution by Source")
+    plt.legend()
+    plt.grid(axis="y")
+
+    plt.show()
 
 def linear_chart():
 
@@ -35,6 +57,7 @@ def linear_chart():
     plt.plot(days,mag_avg,)
     plt.xlabel("days")
     plt.ylabel("avg")
+    plt.title("Earthquake Occurrence Trends and Magnitude Variation Over Time")
     plt.show()
 
 def scattter_depth_chart():
@@ -48,6 +71,7 @@ def scattter_depth_chart():
     plt.scatter(depths, mags)
     plt.xlabel("Depth")
     plt.ylabel("Magnitude")
+    plt.title("Earthquake magnitude and depth")
     plt.show()
 
     
@@ -63,6 +87,7 @@ def blox_plot_chart():
     [mags, depths],
     label=["magnitude","depths"]
     )
+    plt.title("Comparison of earthquake magnitude and depth distributions")
     plt.show()
 
 
@@ -77,6 +102,8 @@ def heat_map_chart():
     plt.hexbin(
     longitudes,
     latitudes,
+    cmap="coolwarm",
+    norm=LogNorm(),
     gridsize=30
     )
 
@@ -84,13 +111,20 @@ def heat_map_chart():
     plt.ylabel("Latitude")
 
     plt.colorbar(label="Earthquake count")
+    ax = plt.gca()
+    ax.set_facecolor("#1e1e1e")  
+    plt.gca().xaxis.set_major_locator(
+    ticker.MaxNLocator(8)
+    )
+    plt.title("Earthquake Geographical Distribution Heatmap")
     plt.show()
 
 def distance_of_tokyo():
     tok_long_lat = (35.6762, 139.6503)
 
     datas = []
-
+    lat = []
+    lon = []
     stmt = Select(Earthquake.latitude,Earthquake.longitude)
     earhtquakes = managedb.read(stmt,"all_row")
     for earthquake in earhtquakes:
@@ -99,11 +133,24 @@ def distance_of_tokyo():
         longitudes = earthquake[1]
         earth_lat_long = (float(latitudes),float(longitudes))
         distance = haversine(tok_long_lat,earth_lat_long)
+        lat.append(latitudes)
+        lon.append(longitudes)
         datas.append(distance)
 
-    plt.hist(distance, bins=20)
+    plt.hexbin(
+        lon,
+        lat,
+        C=datas,
+        reduce_C_function=np.mean,
+        gridsize=30,
+    )
+
     plt.xlabel("Distance from Tokyo (km)")
     plt.ylabel("Earthquake count")
+    plt.gca().xaxis.set_major_locator(
+    ticker.MaxNLocator(8)
+    )
+    plt.title("Distance of earthquakes from Tokyo")
     plt.show()
 
 

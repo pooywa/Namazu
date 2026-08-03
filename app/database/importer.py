@@ -1,8 +1,8 @@
 from pathlib import Path
 import pandas as pd
 from app.database.vacuuming import vacuuming
-from app.database.configuration import engine
-from app.database.mapping import COLLECTOR_MAPPING, MAPPINGS, detect_source
+from app.database import configuration
+from app.database.mapping import COLLECTOR_MAPPING, MAPPINGS, detect_source, normalize_columns
 from app.database.models import Earthquake
 
 TABLE_NAME = "earthquakes"
@@ -17,15 +17,27 @@ def import_one_file(file_path: Path) -> int:
     imported_rows = 0
 
     for chunk in pd.read_csv(file_path, chunksize=CHUNK_SIZE):
+
+        chunk = normalize_columns(chunk)
+
+        missing = set(required_cols) - set(chunk.columns)
+
+        if missing:
+            raise ValueError(
+                f"{file_path.name} missing columns: {missing}\n"
+                f"Available columns: {chunk.columns.tolist()}"
+            )
+
         out = chunk[required_cols].rename(columns=mapping).copy()
+
         out["source"] = source
 
-        #here we clean the data
-        cleaned = vacuuming(out,file_path)
+        # here we clean the data
+        cleaned = vacuuming(out, file_path)
 
         cleaned.to_sql(
             name=TABLE_NAME,
-            con=engine,
+            con=configuration.engine,
             if_exists="append",
             index=False,
             method="multi",
@@ -35,9 +47,8 @@ def import_one_file(file_path: Path) -> int:
 
     return imported_rows
 
-
 def main() -> None:
-    Earthquake.metadata.create_all(engine)
+    Earthquake.metadata.create_all(configuration.engine)
 
     csv_files = sorted(Path("data/raw").glob("*.csv"))
 
