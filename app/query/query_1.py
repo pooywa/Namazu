@@ -16,8 +16,19 @@ def analyze_small_quakes(session: Session):
         "(magnitude < 4), and what are the differences between them?"
     )
 
-    print(Fore.CYAN + Style.BRIGHT + question)
-    print(Fore.GREEN + "Answer:")
+    print(
+        Fore.CYAN +
+        Style.BRIGHT +
+        question +
+        Style.RESET_ALL
+    )
+
+    print(
+        Fore.GREEN +
+        Style.BRIGHT +
+        "Answer:" +
+        Style.RESET_ALL
+    )
 
     stmt = select(
         Earthquake.source,
@@ -35,22 +46,35 @@ def analyze_small_quakes(session: Session):
     if not results:
         print(
             Fore.YELLOW +
-            "No data found for small earthquakes!"
+            "No data found for small earthquakes!" +
+            Style.RESET_ALL
         )
         return
 
-    print("Based on extracted data:")
+    print(
+        Fore.BLUE +
+        "Based on extracted data:" +
+        Style.RESET_ALL
+    )
 
     for row in results:
         print(
-            f"- Source {Fore.YELLOW}{row.source}{Fore.RESET}: "
-            f"{row.small_quakes_count} events | "
-            f"Min magnitude: {row.min_magnitude} | "
-            f"Mean magnitude: {row.mean_magnitude:.2f}"
+            f"- Source "
+            f"{Fore.YELLOW}{Style.BRIGHT}{row.source}{Style.RESET_ALL}: "
+            f"{Fore.GREEN}{row.small_quakes_count}{Style.RESET_ALL} events | "
+            f"Min magnitude: "
+            f"{Fore.MAGENTA}{row.min_magnitude}{Style.RESET_ALL} | "
+            f"Mean magnitude: "
+            f"{Fore.CYAN}{row.mean_magnitude:.2f}{Style.RESET_ALL}"
         )
 
     print()
 
+
 def main():
     with Session(engine) as session:
         analyze_small_quakes(session)
+
+
+if __name__ == "__main__":
+    main()

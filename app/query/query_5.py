@@ -17,8 +17,19 @@ def analyze_japan_recent_quakes(session: Session):
         "regarding Japan's seismic behavior in the last month?"
     )
 
-    print(Fore.CYAN + Style.BRIGHT + question)
-    print(Fore.GREEN + "Answer:")
+    print(
+        Fore.CYAN +
+        Style.BRIGHT +
+        question +
+        Style.RESET_ALL
+    )
+
+    print(
+        Fore.GREEN +
+        Style.BRIGHT +
+        "Answer:" +
+        Style.RESET_ALL
+    )
 
 
     thirty_days_ago = (
@@ -43,10 +54,10 @@ def analyze_japan_recent_quakes(session: Session):
     if stats.total_quakes == 0:
         print(
             Fore.YELLOW +
-            "No earthquakes found."
+            "No earthquakes found." +
+            Style.RESET_ALL
         )
         return
-
 
 
     region_stmt = select(
@@ -79,43 +90,52 @@ def analyze_japan_recent_quakes(session: Session):
 
 
     print(
-        f"Japan had {Fore.YELLOW}"
-        f"{stats.total_quakes}"
-        f"{Fore.RESET} earthquakes."
+        f"Japan had "
+        f"{Fore.YELLOW}{Style.BRIGHT}{stats.total_quakes}"
+        f"{Style.RESET_ALL} earthquakes."
     )
 
     print(
         f"Average magnitude: "
-        f"{Fore.YELLOW}{avg_mag:.2f}"
-        f"{Fore.RESET}"
+        f"{Fore.MAGENTA}{Style.BRIGHT}{avg_mag:.2f}"
+        f"{Style.RESET_ALL}"
     )
 
     print(
         f"Average depth: "
-        f"{Fore.YELLOW}{avg_depth:.2f} km"
-        f"{Fore.RESET}"
+        f"{Fore.BLUE}{Style.BRIGHT}{avg_depth:.2f} km"
+        f"{Style.RESET_ALL}"
     )
 
     print(
         f"Highest concentration: "
-        f"{Fore.YELLOW}{top_region}"
-        f"{Fore.RESET}"
+        f"{Fore.YELLOW}{Style.BRIGHT}{top_region}"
+        f"{Style.RESET_ALL}"
     )
 
 
     if avg_mag < 5:
         print(
+            Fore.GREEN +
             "Conclusion: Japan experienced "
             "continuous minor and moderate seismic activity."
+            + Style.RESET_ALL
         )
     else:
         print(
+            Fore.RED +
             "Conclusion: High seismic activity detected."
+            + Style.RESET_ALL
         )
 
     print()
+
 
 def main():
 
     with Session(engine) as session:
         analyze_japan_recent_quakes(session)
+
+
+if __name__ == "__main__":
+    main()
